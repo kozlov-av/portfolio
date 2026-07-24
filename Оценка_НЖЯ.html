@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Оценка НЖЯ — TOC</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #f4f6f9;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px 60px;
+  color: #2c3e50;
+}
+
+/* ── header ── */
+h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #3d4f61;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.subtitle {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  margin-bottom: 18px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* ── toolbar ── */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+button {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: background 0.18s, transform 0.1s, border-color 0.18s;
+}
+button:active { transform: scale(0.97); }
+.btn-clear { background: #e2e8f0; color: #4a5568; }
+.btn-clear:hover { background: #cbd5e0; }
+.btn-pdf   { background: #4a5568; color: #fff; }
+.btn-pdf:hover { background: #2d3748; }
+.btn-guide { background: #ebf8ff; color: #2b6cb0; border: 1.5px solid #bee3f8; }
+.btn-guide:hover { background: #bee3f8; }
+.btn-light { background: #fff; color: #4a5568; border: 1.5px solid #e2e8f0; }
+.btn-light:hover { background: #f7f9fc; border-color: #cbd5e0; }
+
+/* ── content wrapper (exported to PDF) ── */
+.content-wrap {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── sheet title (область анализа) ── */
+.sheet-title-wrap { text-align: center; }
+.sheet-title {
+  display: inline-block;
+  min-width: 240px;
+  max-width: 100%;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #3d4f61;
+  text-align: center;
+  outline: none;
+  border-bottom: 2px dashed #cbd5e0;
+  padding: 3px 14px 5px;
+  cursor: text;
+  border-radius: 2px;
+  transition: border-color 0.2s;
+}
+.sheet-title:focus { border-bottom-color: #6c7e91; border-bottom-style: solid; }
+.sheet-title:empty::before {
+  content: attr(data-placeholder);
+  color: #c0ccd8;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.92rem;
+}
+
+/* ── summary ── */
+.summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.metric {
+  background: #fff;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+.metric-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a96a3;
+}
+.metric-value {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #3d4f61;
+}
+
+/* ── connectivity callout ── */
+.callout {
+  background: linear-gradient(135deg, #fffde7 0%, #fffbeb 100%);
+  border: 1.5px solid #fbd38d;
+  border-radius: 18px;
+  padding: 14px 18px;
+}
+.callout-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #975a16;
+  margin-bottom: 5px;
+}
+.callout p {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: #744210;
+}
+
+/* ── table panel ── */
+.panel {
+  overflow: hidden;
+  background: #fff;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 22px;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #eef1f4;
+  vertical-align: top;
+  text-align: left;
+}
+th {
+  background: #f7f9fc;
+  color: #5a6878;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+tr:last-child td { border-bottom: 0; }
+
+.idx {
+  width: 74px;
+  color: #8a96a3;
+  font-weight: 700;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.ude { min-width: 240px; }
+.del-col { width: 40px; }
+
+/* ── editable НЖЯ field ── */
+.ude-input {
+  min-height: 48px;
+  padding: 9px 11px;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #2c3e50;
+  white-space: pre-wrap;
+  word-break: break-word;
+  outline: none;
+  cursor: text;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+.ude-input:focus {
+  border-color: #a0b0c0;
+  box-shadow: 0 0 0 3px rgba(108,126,145,0.18);
+}
+.ude-input:empty::before {
+  content: attr(data-placeholder);
+  color: #c0ccd8;
+  font-style: italic;
+}
+
+/* ── score buttons ── */
+.score-cell { width: 268px; }
+.score-row {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(20px, 1fr));
+  gap: 4px;
+  min-width: 232px;
+}
+.score {
+  min-width: 0;
+  height: 30px;
+  padding: 0;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 7px;
+  color: #5a6878;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.score-cell.pain  .score:hover    { border-color: #d9534f; background: #fdeceb; }
+.score-cell.pain  .score.selected { background: #d9534f; border-color: #d9534f; color: #fff; }
+.score-cell.links .score:hover    { border-color: #8893a5; background: #eef1f5; }
+.score-cell.links .score.selected { background: #8893a5; border-color: #8893a5; color: #fff; }
+
+.total {
+  width: 64px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #3d4f61;
+  font-variant-numeric: tabular-nums;
+}
+.prio { width: 100px; }
+.priority {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #eef1f4;
+  color: #718096;
+  white-space: nowrap;
+}
+.priority.high { background: #fed7d7; color: #c53030; }
+.priority.mid  { background: #fdf0c8; color: #975a16; }
+.priority.low  { background: #e6f0f9; color: #2b6cb0; }
+
+/* delete row button */
+.del-cell { text-align: center; }
+.row-del {
+  width: 26px; height: 26px;
+  padding: 0;
+  border-radius: 50%;
+  background: #f4f6f9;
+  color: #a0aec0;
+  font-size: 0.78rem;
+  line-height: 1;
+}
+.row-del:hover { background: #fed7d7; color: #c53030; }
+
+.empty-row {
+  text-align: center;
+  color: #a0aec0;
+  font-style: italic;
+  padding: 26px 10px;
+}
+
+/* add row button */
+.add-wrap {
+  padding: 12px;
+  border-top: 1px solid #eef1f4;
+  background: #fbfcfd;
+}
+.add-row {
+  width: 100%;
+  padding: 11px;
+  border: 1.5px dashed #bcc8d4;
+  border-radius: 12px;
+  background: #fff;
+  color: #4a5568;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+.add-row:hover { border-color: #2b6cb0; color: #2b6cb0; background: #f5f9fd; }
+
+/* ── notes ── */
+.notes-card {
+  background: #fff;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 22px;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+  padding: 18px 20px;
+}
+.notes-card label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a96a3;
+  margin-bottom: 8px;
+}
+textarea {
+  width: 100%;
+  min-height: 96px;
+  resize: vertical;
+  padding: 11px 13px;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #2c3e50;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+textarea:focus {
+  border-color: #a0b0c0;
+  box-shadow: 0 0 0 3px rgba(108,126,145,0.18);
+}
+
+/* ── status ── */
+.status {
+  min-height: 20px;
+  margin-top: 12px;
+  font-size: 0.78rem;
+  color: #a0aec0;
+  text-align: center;
+}
+
+/* ── export mode ── */
+.content-wrap.exporting .row-del,
+.content-wrap.exporting .add-wrap { display: none; }
+
+/* ── guide section ── */
+.guide-section {
+  width: 100%;
+  max-width: 1100px;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.4s ease;
+}
+.guide-section.open { max-height: 1800px; }
+.guide-inner {
+  background: #fff;
+  border-radius: 20px;
+  padding: 26px 30px;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.06);
+  margin-top: 14px;
+}
+.guide-inner h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #3d4f61;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1.5px solid #e2e8f0;
+}
+.guide-inner h2:not(:first-child) { margin-top: 26px; }
+.guide-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+}
+.guide-step {
+  background: #f7f9fc;
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.step-num {
+  background: #4a5568;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.78rem;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-text strong { display: block; font-size: 0.83rem; color: #2d3748; margin-bottom: 3px; }
+.step-text span   { font-size: 0.77rem; color: #718096; line-height: 1.45; }
+
+.guide-glossary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 10px;
+}
+.glossary-item {
+  border-left: 3px solid #bee3f8;
+  padding: 8px 12px;
+  background: #f7fbff;
+  border-radius: 0 10px 10px 0;
+}
+.glossary-item .term { font-size: 0.79rem; font-weight: 700; color: #2b6cb0; margin-bottom: 3px; }
+.glossary-item .def  { font-size: 0.75rem; color: #4a5568; line-height: 1.45; }
+
+/* ── responsive ── */
+@media (max-width: 920px) {
+  .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  table, thead, tbody, tr, td { display: block; }
+  thead { display: none; }
+  tr { margin: 10px; border: 1.5px solid #e8ecf0; border-radius: 16px; padding: 4px 2px; }
+  td { border: 0; padding: 8px 12px; }
+  .idx { color: #3d4f61; }
+  .score-cell { width: auto; }
+  .score-cell::before,
+  .total::before {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #8a96a3;
+  }
+  .score-cell.pain::before  { content: "Боль 1-10"; }
+  .score-cell.links::before { content: "Связность 1-10"; }
+  .total { width: auto; }
+  .total::before { content: "Итог"; }
+  .prio { width: auto; }
+  .del-cell { text-align: right; }
+}
+@media (max-width: 560px) {
+  h1 { font-size: 1.3rem; }
+  .summary { grid-template-columns: 1fr; }
+  .score-row { grid-template-columns: repeat(5, minmax(34px, 1fr)); }
+  .guide-inner { padding: 20px 16px; }
+}
+</style>
+</head>
+<body>
+
+<h1>Оценка НЖЯ</h1>
+<p class="subtitle">Список нежелательных явлений · Theory of Constraints</p>
+
+<div class="toolbar">
+  <button class="btn-clear" id="resetBtn" type="button">✕ Сбросить всё</button>
+  <button class="btn-guide" id="guideBtn" type="button">? Как оценивать НЖЯ</button>
+  <button class="btn-light" id="sortBtn"  type="button">⇅ Сортировать</button>
+  <button class="btn-light" id="copyBtn"  type="button">⧉ Скопировать</button>
+  <button class="btn-pdf"   id="pdfBtn"   type="button">↓ Экспорт в PDF</button>
+</div>
+
+<!-- ── content (exported to PDF) ── -->
+<div class="content-wrap" id="contentWrap">
+
+  <div class="sheet-title-wrap">
+    <div class="sheet-title" id="sheetTitle" contenteditable="true"
+         data-placeholder="НЖЯ чего? Например: НЖЯ нашего рынка, жизнь, здоровья, НЖЯ увеличения продаж?…"></div>
+  </div>
+
+  <section class="summary" aria-label="Сводка">
+    <div class="metric">
+      <span class="metric-label">Оценено</span>
+      <span class="metric-value" id="ratedCount">0/0</span>
+    </div>
+    <div class="metric">
+      <span class="metric-label">Средняя боль</span>
+      <span class="metric-value" id="avgPain">0</span>
+    </div>
+    <div class="metric">
+      <span class="metric-label">Средняя связность</span>
+      <span class="metric-value" id="avgLinks">0</span>
+    </div>
+    <div class="metric">
+      <span class="metric-label">Главный кандидат</span>
+      <span class="metric-value" id="topCandidate">—</span>
+    </div>
+  </section>
+
+  <div class="callout">
+    <div class="callout-label">⚠ О баллах связности, итога и приоритета</div>
+    <p>Связность очень сложно оценить в баллах — по-настоящему она видна только когда построено
+       Дерево текущей реальности (причинно-следственная карта всех НЖЯ). Поля «Связность», «Итог»
+       и «Приоритет» — это грубая эвристика <strong>для дополнительного анализа</strong>, а не точный
+       вывод. Используйте их как подсказку, с какого НЖЯ начать разбор, но решение о корневой
+       причине принимайте по причинно-следственному дереву, а не по сумме баллов.</p>
+  </div>
+
+  <section class="panel" aria-label="Список НЖЯ">
+    <table>
+      <thead>
+        <tr>
+          <th class="idx">#</th>
+          <th>Нежелательное явление</th>
+          <th>Боль 1-10</th>
+          <th>Связность 1-10</th>
+          <th>Итог</th>
+          <th>Приоритет</th>
+          <th class="del-col"></th>
+        </tr>
+      </thead>
+      <tbody id="udeRows"></tbody>
+    </table>
+    <div class="add-wrap">
+      <button class="add-row" id="addBtn" type="button">+ Добавить НЖЯ</button>
+    </div>
+  </section>
+
+  <section class="notes-card">
+    <label for="notes">Заметки</label>
+    <textarea id="notes" placeholder="Короткие наблюдения по оценкам, гипотезы о корневой причине…"></textarea>
+  </section>
+
+</div><!-- end content-wrap -->
+
+<div class="status" id="status" role="status" aria-live="polite"></div>
+
+<!-- ── guide ── -->
+<div class="guide-section" id="guideSection">
+  <div class="guide-inner">
+
+    <h2>Как оценивать НЖЯ</h2>
+    <div class="guide-steps">
+      <div class="guide-step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <strong>Выпишите НЖЯ</strong>
+          <span>Конкретный наблюдаемый негативный факт о вашей системе или жизни. Не мнение и не «нет решения X», а явление, которое уже мешает.</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <strong>Оцените Боль (1-10)</strong>
+          <span>Насколько это явление мешает вам прямо сейчас. Чистая текущая острота, без оглядки на причины.</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <strong>Оцените Связность (1-10)</strong>
+          <span>Насколько это НЖЯ тянет за собой другие. Чем выше — тем ближе к корню. Оценка приблизительная (см. пометку выше).</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <strong>Посмотрите Итог и Приоритет</strong>
+          <span>Боль + Связность. Это грубая подсказка, какие НЖЯ стоит разбирать первыми как кандидатов в корневую проблему.</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">5</div>
+        <div class="step-text">
+          <strong>Постройте Дерево текущей реальности</strong>
+          <span>Только причинно-следственное дерево реально сведёт все НЖЯ к 1-2 корневым причинам. Баллы — лишь подготовка к этому шагу.</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">6</div>
+        <div class="step-text">
+          <strong>Сохраните как шаблон</strong>
+          <span>Поля редактируются, список можно дополнять и сокращать. «Сбросить всё» очищает все НЖЯ и оценки до пустого шаблона.</span>
+        </div>
+      </div>
+    </div>
+
+    <h2>Термины ТОС</h2>
+    <div class="guide-glossary">
+      <div class="glossary-item">
+        <div class="term">НЖЯ — нежелательное явление</div>
+        <div class="def">Реальный наблюдаемый негативный факт. Проверка: это факт, а не мнение и не «отсутствие моего решения»?</div>
+      </div>
+      <div class="glossary-item">
+        <div class="term">Боль</div>
+        <div class="def">Субъективная острота «здесь и сейчас». Высокая боль не означает, что это корневая причина.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="term">Связность</div>
+        <div class="def">Сколько других НЖЯ держится на этом явлении. Высокая связность — признак близости к корню.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="term">Корневая причина</div>
+        <div class="def">1-2 причины, из которых вытекает большинство НЖЯ. «Любая сложная ситуация по своей природе проста» (Э. Голдратт).</div>
+      </div>
+      <div class="glossary-item">
+        <div class="term">Дерево текущей реальности (ДТР)</div>
+        <div class="def">Диаграмма причин и следствий, сводящая все НЖЯ к корню. Настоящий инструмент ответа на вопрос «что менять?».</div>
+      </div>
+      <div class="glossary-item">
+        <div class="term">Приоритет</div>
+        <div class="def">Производное от суммы баллов (Высокий / Средний / Низкий). Ориентир очерёдности разбора, а не диагноз.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Storage ─────────────────────────────────────────────────────────────────
+const storageKey  = "toc-ude-score-v1";
+const DEFAULT_ROWS = 5;
+
+const rowsEl   = document.getElementById("udeRows");
+const statusEl = document.getElementById("status");
+const notesEl  = document.getElementById("notes");
+const titleEl  = document.getElementById("sheetTitle");
+
+let scores = loadScores();
+let sorted = false;
+
+function escapeHtml(value) {
+  return String(value == null ? "" : value)
+    .replace(/[&<>]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[ch]));
+}
+
+function makeItem(id) {
+  return { id: id, text: "", pain: 0, links: 0 };
+}
+
+function blankTemplate() {
+  return {
+    title: "",
+    notes: "",
+    items: Array.from({ length: DEFAULT_ROWS }, (_, i) => makeItem(i + 1))
+  };
+}
+
+function normalizeIds() {
+  scores.items.forEach((item, index) => { item.id = index + 1; });
+}
+
+function loadScores() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(storageKey));
+    if (saved && Array.isArray(saved.items)) {
+      return {
+        title: typeof saved.title === "string" ? saved.title : "",
+        notes: typeof saved.notes === "string" ? saved.notes : "",
+        items: saved.items.map((item, index) => ({
+          id: index + 1,
+          text: typeof item.text === "string" ? item.text : "",
+          pain: Number(item.pain) || 0,
+          links: Number(item.links) || 0
+        }))
+      };
+    }
+  } catch (error) {}
+  return blankTemplate();
+}
+
+function setStatus(message) {
+  statusEl.textContent = message || "";
+}
+
+function saveScores(message) {
+  scores.title = titleEl.innerText;
+  scores.notes = notesEl.value;
+  localStorage.setItem(storageKey, JSON.stringify(scores));
+  if (message) setStatus(message);
+}
+
+// ── Calculations ────────────────────────────────────────────────────────────
+function getTotal(item) {
+  return (Number(item.pain) || 0) + (Number(item.links) || 0);
+}
+
+function getPriority(item) {
+  const total = getTotal(item);
+  if (total >= 16) return ["Высокий", "high"];
+  if (total >= 10) return ["Средний", "mid"];
+  if (total > 0)   return ["Низкий", "low"];
+  return ["—", ""];
+}
+
+function getOrderedItems() {
+  if (!sorted) return scores.items.slice();
+  return scores.items.slice().sort((a, b) =>
+    getTotal(b) - getTotal(a) || b.pain - a.pain || a.id - b.id);
+}
+
+function findItem(id) {
+  return scores.items.find(item => item.id === Number(id));
+}
+
+// ── Render ──────────────────────────────────────────────────────────────────
+function scoreButtons(item, field) {
+  let html = "";
+  const label = field === "pain" ? "Боль" : "Связность";
+  for (let value = 1; value <= 10; value++) {
+    const selected = Number(item[field]) === value ? " selected" : "";
+    html += `<button class="score${selected}" type="button" data-id="${item.id}" `
+          + `data-field="${field}" data-value="${value}" `
+          + `aria-label="${label} ${value}">${value}</button>`;
+  }
+  return html;
+}
+
+function render() {
+  const ordered = getOrderedItems();
+  if (!ordered.length) {
+    rowsEl.innerHTML =
+      `<tr><td colspan="7" class="empty-row">Список пуст. Нажмите «+ Добавить НЖЯ», чтобы начать.</td></tr>`;
+  } else {
+    rowsEl.innerHTML = ordered.map(item => {
+      const [label, cls] = getPriority(item);
+      const total = getTotal(item);
+      return `
+        <tr data-id="${item.id}">
+          <td class="idx">НЖЯ-${item.id}</td>
+          <td class="ude">
+            <div class="ude-input" contenteditable="true" data-id="${item.id}"
+                 data-placeholder="Опишите нежелательное явление — конкретный негативный факт…">${escapeHtml(item.text)}</div>
+          </td>
+          <td class="score-cell pain"><div class="score-row">${scoreButtons(item, "pain")}</div></td>
+          <td class="score-cell links"><div class="score-row">${scoreButtons(item, "links")}</div></td>
+          <td class="total">${total || "—"}</td>
+          <td class="prio"><span class="priority ${cls}">${label}</span></td>
+          <td class="del-cell">
+            <button class="row-del" type="button" data-id="${item.id}"
+                    title="Удалить НЖЯ" aria-label="Удалить НЖЯ-${item.id}">✕</button>
+          </td>
+        </tr>`;
+    }).join("");
+  }
+  updateSummary();
+}
+
+function updateSummary() {
+  const items = scores.items;
+  const rated = items.filter(item => item.pain > 0 && item.links > 0);
+  const avgPain  = rated.length ? rated.reduce((sum, i) => sum + Number(i.pain), 0)  / rated.length : 0;
+  const avgLinks = rated.length ? rated.reduce((sum, i) => sum + Number(i.links), 0) / rated.length : 0;
+  const top = items.slice().sort((a, b) => getTotal(b) - getTotal(a))[0];
+
+  document.getElementById("ratedCount").textContent  = `${rated.length}/${items.length}`;
+  document.getElementById("avgPain").textContent     = avgPain  ? avgPain.toFixed(1)  : "0";
+  document.getElementById("avgLinks").textContent    = avgLinks ? avgLinks.toFixed(1) : "0";
+  document.getElementById("topCandidate").textContent =
+    top && getTotal(top) > 0 ? `НЖЯ-${top.id}` : "—";
+}
+
+function buildExportText() {
+  const lines = getOrderedItems().map(item => {
+    const text = (item.text || "").replace(/\s+/g, " ").trim() || "(без описания)";
+    return `НЖЯ-${item.id}. Боль: ${item.pain || "—"}, связность: ${item.links || "—"}, `
+         + `итог: ${getTotal(item) || "—"} — ${text}`;
+  });
+  const notes = notesEl.value.trim();
+  const title = titleEl.innerText.trim();
+  const header = title ? `НЖЯ — ${title}\n\n` : "";
+  const body = notes ? `${lines.join("\n")}\n\nЗаметки:\n${notes}` : lines.join("\n");
+  return header + body;
+}
+
+// ── Events: table ───────────────────────────────────────────────────────────
+rowsEl.addEventListener("click", event => {
+  const scoreBtn = event.target.closest(".score");
+  if (scoreBtn) {
+    const item = findItem(scoreBtn.dataset.id);
+    if (!item) return;
+    item[scoreBtn.dataset.field] = Number(scoreBtn.dataset.value);
+    saveScores("Оценка сохранена");
+    render();
+    return;
+  }
+  const delBtn = event.target.closest(".row-del");
+  if (delBtn) {
+    const item = findItem(delBtn.dataset.id);
+    if (!item) return;
+    const hasText = (item.text || "").trim().length > 0;
+    if (hasText && !window.confirm(`Удалить НЖЯ-${item.id}?`)) return;
+    scores.items = scores.items.filter(entry => entry.id !== item.id);
+    normalizeIds();
+    saveScores("НЖЯ удалено");
+    render();
+  }
+});
+
+// editing the НЖЯ text — save without re-render so the cursor stays in place
+rowsEl.addEventListener("input", event => {
+  const field = event.target.closest(".ude-input");
+  if (!field) return;
+  const item = findItem(field.dataset.id);
+  if (!item) return;
+  item.text = field.innerText;
+  saveScores("Сохранено");
+});
+
+// ── Events: toolbar ─────────────────────────────────────────────────────────
+titleEl.addEventListener("input", () => saveScores("Сохранено"));
+notesEl.addEventListener("input", () => saveScores("Заметки сохранены"));
+
+document.getElementById("addBtn").addEventListener("click", () => {
+  scores.items.push(makeItem(scores.items.length + 1));
+  normalizeIds();
+  saveScores("Добавлено новое НЖЯ");
+  render();
+  const field = rowsEl.querySelector(`.ude-input[data-id="${scores.items.length}"]`);
+  if (field) field.focus();
+});
+
+document.getElementById("sortBtn").addEventListener("click", () => {
+  sorted = !sorted;
+  document.getElementById("sortBtn").textContent = sorted ? "↩ Вернуть порядок" : "⇅ Сортировать";
+  render();
+});
+
+document.getElementById("copyBtn").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(buildExportText());
+    setStatus("Результаты скопированы");
+  } catch (error) {
+    setStatus("Не удалось скопировать автоматически. Скопируйте текст вручную.");
+  }
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (!window.confirm("Сбросить все НЖЯ, оценки и заметки? Шаблон станет пустым.")) return;
+  localStorage.removeItem(storageKey);
+  scores = blankTemplate();
+  titleEl.textContent = "";
+  notesEl.value = "";
+  sorted = false;
+  document.getElementById("sortBtn").textContent = "⇅ Сортировать";
+  render();
+  setStatus("Шаблон сброшен — все НЖЯ очищены");
+});
+
+document.getElementById("guideBtn").addEventListener("click", () => {
+  const section = document.getElementById("guideSection");
+  const open = section.classList.toggle("open");
+  document.getElementById("guideBtn").textContent =
+    open ? "✕ Скрыть руководство" : "? Как оценивать НЖЯ";
+});
+
+// ── PDF export (как в «Грозовой туче») ──────────────────────────────────────
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
+
+async function exportPDF() {
+  const node = document.getElementById("contentWrap");
+  try {
+    setStatus("Готовим PDF…");
+    if (typeof html2canvas === "undefined") {
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+    }
+    if (typeof window.jspdf === "undefined") {
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+    }
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+
+    node.classList.add("exporting");
+    let canvas;
+    try {
+      canvas = await html2canvas(node, {
+        scale: 2, useCORS: true, logging: false, backgroundColor: "#f4f6f9"
+      });
+    } finally {
+      node.classList.remove("exporting");
+    }
+
+    const width  = canvas.width  / 2;
+    const height = canvas.height / 2;
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: width > height ? "landscape" : "portrait",
+      unit: "px",
+      format: [width, height]
+    });
+    pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, width, height);
+    pdf.save("ocenka-njya.pdf");
+    setStatus("PDF сохранён");
+  } catch (error) {
+    node.classList.remove("exporting");
+    setStatus("Не удалось создать PDF. Для загрузки библиотеки нужен доступ в интернет.");
+  }
+}
+
+document.getElementById("pdfBtn").addEventListener("click", exportPDF);
+
+// ── Init ────────────────────────────────────────────────────────────────────
+titleEl.textContent = scores.title || "";
+notesEl.value = scores.notes || "";
+render();
+</script>
+</body>
+</html>

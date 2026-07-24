@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Грозовая туча — TOC</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #f4f6f9;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px 60px;
+  color: #2c3e50;
+}
+
+/* ── header ── */
+h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #3d4f61;
+  margin-bottom: 4px;
+}
+.subtitle {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  margin-bottom: 18px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── toolbar ── */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+button {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: background 0.18s, transform 0.1s;
+}
+button:active { transform: scale(0.97); }
+.btn-clear { background: #e2e8f0; color: #4a5568; }
+.btn-clear:hover { background: #cbd5e0; }
+.btn-pdf   { background: #4a5568; color: #fff; }
+.btn-pdf:hover { background: #2d3748; }
+.btn-guide { background: #ebf8ff; color: #2b6cb0; border: 1.5px solid #bee3f8; }
+.btn-guide:hover { background: #bee3f8; }
+
+/* ── diagram wrapper ── */
+.diagram-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 980px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 12px 20px 20px;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+}
+
+/* diagram title */
+.diagram-title-wrap {
+  width: 100%;
+  text-align: center;
+  padding: 6px 0 2px;
+}
+.diagram-title {
+  display: inline-block;
+  min-width: 180px;
+  max-width: 100%;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #3d4f61;
+  text-align: center;
+  outline: none;
+  border-bottom: 2px dashed #cbd5e0;
+  padding: 3px 14px 4px;
+  cursor: text;
+  transition: border-color 0.2s;
+  border-radius: 2px;
+}
+.diagram-title:focus { border-bottom-color: #6c7e91; border-bottom-style: solid; }
+.diagram-title:empty::before {
+  content: attr(data-placeholder);
+  color: #c0ccd8;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.9rem;
+}
+
+svg#arrowSvg {
+  position: absolute;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+
+/* ── grid ── */
+.diagram-grid {
+  display: grid;
+  grid-template-columns: 210px 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  column-gap: 44px;
+  row-gap: 72px;
+  align-items: start;
+  position: relative;
+  z-index: 2;
+  padding: 24px 0 28px;
+  pointer-events: none;
+}
+
+.block-goal      { grid-column: 1; grid-row: 1 / 3; align-self: center; }
+.block-req-a     { grid-column: 2; grid-row: 1; }
+.block-pre-b     { grid-column: 3; grid-row: 1; }
+.block-req-b     { grid-column: 2; grid-row: 2; }
+.block-pre-c     { grid-column: 3; grid-row: 2; }
+.block-injection { grid-column: 2 / 4; grid-row: 3; }
+
+/* ── blocks ── */
+.block {
+  border-radius: 22px;
+  padding: 20px 20px 14px;
+  min-height: 90px;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  outline: none;
+  word-break: break-word;
+  transition: box-shadow 0.2s;
+  position: relative;
+  cursor: text;
+  border: 1.5px solid #e8ecf0;
+  pointer-events: auto;
+}
+.block:focus {
+  box-shadow: 0 0 0 3px rgba(108,126,145,0.2), 0 2px 12px rgba(0,0,0,0.07);
+  border-color: #a0b0c0;
+}
+.block:empty::before {
+  content: attr(data-placeholder);
+  color: #c0ccd8;
+  pointer-events: none;
+  font-style: italic;
+  font-size: 0.80rem;
+}
+
+/* tag labels */
+.block::after {
+  content: attr(data-label);
+  position: absolute;
+  top: -11px; left: 16px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 2px 9px;
+  border-radius: 10px;
+  background: #e2e8f0;
+  color: #718096;
+}
+.block-goal::after  { background: #fed7d7; color: #c53030; }
+.block-pre-b::after,
+.block-pre-c::after { background: #ebf8ff; color: #2b6cb0; }
+.block-injection::after { background: #fefcbf; color: #744210; }
+
+/* goal pulse */
+.block-goal { animation: pulse-goal 3.2s ease-in-out infinite; }
+@keyframes pulse-goal {
+  0%,100% { box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 0 0 0 rgba(217,83,79,0); border-color: #e8ecf0; }
+  50%      { box-shadow: 0 2px 18px rgba(0,0,0,0.10), 0 0 14px 4px rgba(217,83,79,0.18); border-color: #fca5a5; }
+}
+
+/* injection block */
+.block-injection {
+  background: linear-gradient(135deg, #fffde7 0%, #fffbeb 100%);
+  border: 2px solid #f6e05e;
+  cursor: default;
+}
+.block-injection:focus { box-shadow: 0 0 0 3px rgba(246,224,94,0.3); border-color: #d69e2e; }
+.injection-premise {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #f6e05e;
+  font-size: 0.8rem;
+  min-height: 36px;
+  outline: none;
+  word-break: break-word;
+  cursor: text;
+}
+.injection-premise:empty::before {
+  content: attr(data-placeholder);
+  color: #c9a227;
+  font-style: italic;
+  font-size: 0.75rem;
+}
+.injection-premise:focus { outline: none; }
+
+/* ── tooltip on hover ── */
+.block-tip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2d3748;
+  color: #e2e8f0;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  padding: 9px 13px;
+  border-radius: 10px;
+  width: 240px;
+  z-index: 30;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+}
+.block-tip::after {
+  content: '';
+  position: absolute;
+  top: 100%; left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2d3748;
+}
+.block:hover .block-tip { display: block; }
+
+/* ── premise bubble (thought) ── */
+.premise-bubble {
+  position: absolute;
+  background: #fffef5;
+  border: 1.5px solid #f6d860;
+  border-radius: 16px;
+  padding: 12px 14px 16px;
+  width: 260px;
+  z-index: 20;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.14);
+  display: none;
+}
+.premise-bubble.open { display: block; }
+.premise-bubble .pb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+.premise-bubble .pb-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #975a16;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.premise-bubble .pb-close {
+  background: none;
+  border: none;
+  color: #b7791f;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+.premise-bubble .pb-close:hover { background: #fef3c7; }
+.premise-bubble .pb-hint {
+  font-size: 0.72rem;
+  color: #92400e;
+  font-style: italic;
+  margin-bottom: 8px;
+  line-height: 1.45;
+  min-height: 1em;
+}
+.premise-bubble textarea {
+  width: 100%;
+  min-height: 72px;
+  resize: vertical;
+  border: 1px solid #f6d860;
+  border-radius: 8px;
+  padding: 7px 9px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #2c3e50;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.18s;
+}
+.premise-bubble textarea:focus { border-color: #d69e2e; }
+.premise-bubble textarea::placeholder { color: #c9a227; font-style: italic; }
+/* thought dots below bubble */
+.premise-bubble::after {
+  content: '●   ●   ●';
+  position: absolute;
+  top: 100%; left: 22px;
+  font-size: 0.45rem;
+  color: #f6d860;
+  letter-spacing: 2px;
+  line-height: 2;
+  pointer-events: none;
+}
+
+/* ── guide section ── */
+.guide-section {
+  width: 100%;
+  max-width: 980px;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.4s ease;
+}
+.guide-section.open { max-height: 1400px; }
+.guide-inner {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 32px;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.06);
+  margin-top: 14px;
+}
+.guide-inner h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #3d4f61;
+  margin-bottom: 18px;
+  padding-bottom: 8px;
+  border-bottom: 1.5px solid #e2e8f0;
+}
+.guide-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.guide-step {
+  background: #f7f9fc;
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.step-num {
+  background: #4a5568;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.78rem;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-text strong { display: block; font-size: 0.83rem; color: #2d3748; margin-bottom: 3px; }
+.step-text span   { font-size: 0.77rem; color: #718096; line-height: 1.45; }
+
+.guide-glossary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px;
+}
+.glossary-item {
+  border-left: 3px solid #bee3f8;
+  padding: 8px 12px;
+  background: #f7fbff;
+  border-radius: 0 10px 10px 0;
+}
+.glossary-item .term { font-size: 0.79rem; font-weight: 700; color: #2b6cb0; margin-bottom: 3px; }
+.glossary-item .def  { font-size: 0.75rem; color: #4a5568; line-height: 1.45; }
+
+.guide-clr {
+  margin-top: 20px;
+  background: #f7f9fc;
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.guide-clr .clr-title { font-size: 0.82rem; font-weight: 700; color: #4a5568; margin-bottom: 8px; }
+.clr-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
+.clr-list li { font-size: 0.76rem; color: #718096; line-height: 1.4; padding-left: 12px; position: relative; }
+.clr-list li::before { content: '→'; position: absolute; left: 0; color: #a0aec0; }
+
+.guide-injection {
+  margin-top: 16px;
+  background: #fffbeb;
+  border: 1.5px solid #fbd38d;
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.guide-injection .inj-title { font-size: 0.82rem; font-weight: 700; color: #975a16; margin-bottom: 6px; }
+.guide-injection p { font-size: 0.77rem; color: #744210; line-height: 1.5; }
+
+/* ── print ── */
+@media print {
+  body { background: #fff; padding: 0; align-items: flex-start; }
+  .toolbar, .guide-section, .subtitle, h1 { display: none !important; }
+  .diagram-wrapper { box-shadow: none; border-radius: 0; max-width: 100%; }
+  .block-tip, .premise-bubble { display: none !important; }
+  @page { size: landscape; margin: 10mm; }
+}
+
+/* ── responsive ── */
+@media (max-width: 720px) {
+  .diagram-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto auto;
+    row-gap: 20px;
+  }
+  .block-goal      { grid-column: 1 / 3; grid-row: 1; }
+  .block-req-a     { grid-column: 1; grid-row: 2; }
+  .block-pre-b     { grid-column: 2; grid-row: 2; }
+  .block-req-b     { grid-column: 1; grid-row: 3; }
+  .block-pre-c     { grid-column: 2; grid-row: 3; }
+  .block-injection { grid-column: 1 / 3; grid-row: 4; }
+  svg#arrowSvg { display: none; }
+  .guide-inner { padding: 20px 16px; }
+  .clr-list { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<h1>Грозовая туча</h1>
+<p class="subtitle">Диаграмма разрешения конфликта · Theory of Constraints</p>
+
+<div class="toolbar">
+  <button class="btn-clear" onclick="clearAll()">✕ Очистить всё</button>
+  <button class="btn-guide" onclick="toggleGuide()" id="btnGuide">? Как строить тучу</button>
+  <button class="btn-pdf"   onclick="exportPDF()">↓ Экспорт в PDF</button>
+</div>
+
+<!-- ── diagram ── -->
+<div class="diagram-wrapper" id="diagramWrapper">
+
+  <div class="diagram-title-wrap">
+    <div class="diagram-title" id="diagramTitle"
+         contenteditable="true" data-key="title"
+         data-placeholder="Название конфликта…"></div>
+  </div>
+
+  <svg id="arrowSvg"></svg>
+
+  <!-- ── 5 premise bubbles ── -->
+  <div class="premise-bubble" id="pb-pb-ra">
+    <div class="pb-header">
+      <span class="pb-label">Исходная посылка</span>
+      <button class="pb-close" onclick="closePremise('pb-ra')">✕</button>
+    </div>
+    <div class="pb-hint" id="hint-pb-ra"></div>
+    <textarea id="ta-pb-ra" placeholder="Запишите скрытое допущение за этой стрелкой…"></textarea>
+  </div>
+
+  <div class="premise-bubble" id="pb-ra-g">
+    <div class="pb-header">
+      <span class="pb-label">Исходная посылка</span>
+      <button class="pb-close" onclick="closePremise('ra-g')">✕</button>
+    </div>
+    <div class="pb-hint" id="hint-ra-g"></div>
+    <textarea id="ta-ra-g" placeholder="Запишите скрытое допущение за этой стрелкой…"></textarea>
+  </div>
+
+  <div class="premise-bubble" id="pb-pc-rb">
+    <div class="pb-header">
+      <span class="pb-label">Исходная посылка</span>
+      <button class="pb-close" onclick="closePremise('pc-rb')">✕</button>
+    </div>
+    <div class="pb-hint" id="hint-pc-rb"></div>
+    <textarea id="ta-pc-rb" placeholder="Запишите скрытое допущение за этой стрелкой…"></textarea>
+  </div>
+
+  <div class="premise-bubble" id="pb-rb-g">
+    <div class="pb-header">
+      <span class="pb-label">Исходная посылка</span>
+      <button class="pb-close" onclick="closePremise('rb-g')">✕</button>
+    </div>
+    <div class="pb-hint" id="hint-rb-g"></div>
+    <textarea id="ta-rb-g" placeholder="Запишите скрытое допущение за этой стрелкой…"></textarea>
+  </div>
+
+  <div class="premise-bubble" id="pb-conflict">
+    <div class="pb-header">
+      <span class="pb-label">⚡ Суть конфликта</span>
+      <button class="pb-close" onclick="closePremise('conflict')">✕</button>
+    </div>
+    <div class="pb-hint" id="hint-conflict"></div>
+    <textarea id="ta-conflict" placeholder="Почему одновременно выполнить оба условия невозможно?"></textarea>
+  </div>
+
+  <!-- ── grid ── -->
+  <div class="diagram-grid">
+
+    <div class="block block-goal" id="blockGoal"
+         contenteditable="true" data-key="goal"
+         data-placeholder="Общая цель обеих сторон…"
+         data-label="Цель (A)">
+      <div class="block-tip">Общий результат, разделяемый обеими сторонами. Формула: «Чтобы достичь Цели, необходимо Требование А И Требование Б». Конфликт — не в цели, а в методах её достижения.</div>
+    </div>
+
+    <div class="block block-req-a" id="blockReqA"
+         contenteditable="true" data-key="reqA"
+         data-placeholder="Что необходимо первой стороне для достижения цели?"
+         data-label="Требование А (B)">
+      <div class="block-tip">Потребность стороны 1. Логика стрелки: «Для того чтобы [Цель], я обязан иметь [Требование А]». Нажмите на стрелку ←, чтобы оспорить посылку за ней.</div>
+    </div>
+
+    <div class="block block-pre-b" id="blockPreB"
+         contenteditable="true" data-key="preB"
+         data-placeholder="Какое условие необходимо для Требования А?"
+         data-label="Предпосылка В (D)">
+      <div class="block-tip">Конкретное действие или условие для Требования А. Логика: «Чтобы [Требование А], я обязан [Предпосылка В]». Именно здесь живёт ложная исходная посылка — нажмите на стрелку, чтобы её артикулировать.</div>
+    </div>
+
+    <div class="block block-req-b" id="blockReqB"
+         contenteditable="true" data-key="reqB"
+         data-placeholder="Что необходимо второй стороне для достижения цели?"
+         data-label="Требование Б (C)">
+      <div class="block-tip">Потребность стороны 2. Логика: «Для того чтобы [Цель], я обязан иметь [Требование Б]». Защищает что-то важное для другой стороны. Нажмите на стрелку ←, чтобы оспорить посылку.</div>
+    </div>
+
+    <div class="block block-pre-c" id="blockPreC"
+         contenteditable="true" data-key="preC"
+         data-placeholder="Какое условие необходимо для Требования Б?"
+         data-label="Предпосылка С (D′)">
+      <div class="block-tip">Конкретное условие для Требования Б. Конфликтует с Предпосылкой В — выполнить оба одновременно невозможно. Нажмите на молнию ⚡, чтобы зафиксировать суть конфликта.</div>
+    </div>
+
+    <!-- ── injection block ── -->
+    <div class="block block-injection" id="blockInjection">
+      <div id="injectionMain"
+           contenteditable="true" data-key="injection"
+           data-placeholder="💡 Инъекция — новое условие, которое делает ложной одну из исходных посылок…"
+           style="min-height:52px;outline:none;word-break:break-word;"></div>
+      <div class="injection-premise"
+           id="injectionPremise"
+           contenteditable="true" data-key="injection_premise"
+           data-placeholder="Какую именно посылку мы оспариваем и почему она ложна?"></div>
+    </div>
+
+  </div><!-- end grid -->
+</div><!-- end wrapper -->
+
+<!-- ── guide ── -->
+<div class="guide-section" id="guideSection">
+  <div class="guide-inner">
+
+    <h2>Как построить и «разбить» Грозовую тучу</h2>
+    <div class="guide-steps">
+      <div class="guide-step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <strong>Сформулируйте конфликт</strong>
+          <span>Запишите D и D′ как конкретные действия («Делать X» против «Не делать X»). Важно: действия, а не состояния.</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <strong>Поднимитесь к потребностям</strong>
+          <span>«Какую потребность защищает D?» → Требование А. То же для D′ → Требование Б. Потребность — не переформулированное действие.</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <strong>Найдите общую Цель</strong>
+          <span>«Зачем нужны и Требование А, и Требование Б?» → Цель. Если общей цели нет — туча построена неверно.</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <strong>Артикулируйте исходные посылки</strong>
+          <span>Нажмите на каждую стрелку и запишите: «…потому что». В этих "потому что" живёт ложная посылка.</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">5</div>
+        <div class="step-text">
+          <strong>Найдите слабую посылку</strong>
+          <span>Какое допущение можно поставить под сомнение? Это ваша точка выхода из конфликта.</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">6</div>
+        <div class="step-text">
+          <strong>Сформулируйте Инъекцию</strong>
+          <span>Новое условие, при котором слабая посылка становится ложной. Не компромисс — прорыв, который даёт обеим сторонам то, что им нужно.</span>
+        </div>
+      </div>
+    </div>
+
+    <h2>Термины ТОС</h2>
+    <div class="guide-glossary">
+      <div class="glossary-item">
+        <div class="term">Цель (A)</div>
+        <div class="def">Общий результат, который хотят достичь обе стороны. Конфликт не в цели, а в методах. Должна быть конкретной и проверяемой.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="term">Требование А (B)</div>
+        <div class="def">Потребность стороны 1. «Для того чтобы [Цель], я обязан иметь [Требование А]». Защищает что-то важное.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="term">Требование Б (C)</div>
+        <div class="def">Потребность стороны 2. «Для того чтобы [Цель], я обязан иметь [Требование Б]». Тоже законная потребность.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="term">Предпосылка В (D)</div>
+        <div class="def">Конкретное действие для Требования А. Конфликтует с D′. Именно здесь ищем ложную исходную посылку.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="term">Предпосылка С (D′)</div>
+        <div class="def">Конкретное действие для Требования Б. Противоположно D — одновременное выполнение невозможно.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="term">Исходная посылка</div>
+        <div class="def">Скрытое допущение за каждой стрелкой. Формулируется: «Эта стрелка верна, потому что…». Пока не поставлена под сомнение — конфликт кажется неразрешимым.</div>
+      </div>
+    </div>
+
+    <div class="guide-clr">
+      <div class="clr-title">8 законных оговорок (CLR) — проверяйте каждую стрелку:</div>
+      <ul class="clr-list">
+        <li>Ясность формулировки</li>
+        <li>Существование сущности (факт, не мнение)</li>
+        <li>Существование причинно-следственной связи</li>
+        <li>Достаточность причины</li>
+        <li>Дополнительная независимая причина</li>
+        <li>Подмена причины и следствия</li>
+        <li>Предсказанное следствие (проверка в реальности)</li>
+        <li>Тавтология (A и B — не одно и то же?)</li>
+      </ul>
+    </div>
+
+    <div class="guide-injection">
+      <div class="inj-title">💡 Инъекция — ключ к разрешению</div>
+      <p>Инъекция — прорывная идея, которая делает конфликт несуществующим. Не «найти баланс» и не «пойти на компромисс», а найти такое условие, при котором Требование А достигается без D, или Требование Б — без D′. Когда исходная посылка за одной из стрелок D или D′ признана ложной — конфликт исчезает. Результат инъекции проверяется через Дерево Будущей Действительности.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Storage ───────────────────────────────────────────────────────────────────
+const BLOCK_KEYS   = ['title','goal','reqA','preB','reqB','preC'];
+const PREMISE_IDS  = ['pb-ra','ra-g','pc-rb','rb-g','conflict'];
+const INJECT_KEYS  = ['injection','injection_premise'];
+
+function saveAll() {
+  BLOCK_KEYS.forEach(k => {
+    const el = document.querySelector(`[data-key="${k}"]`);
+    if (el) localStorage.setItem('toc_' + k, el.innerHTML);
+  });
+  INJECT_KEYS.forEach(k => {
+    const el = document.querySelector(`[data-key="${k}"]`);
+    if (el) localStorage.setItem('toc_' + k, el.innerHTML);
+  });
+}
+
+function loadAll() {
+  [...BLOCK_KEYS, ...INJECT_KEYS].forEach(k => {
+    const el = document.querySelector(`[data-key="${k}"]`);
+    const v  = localStorage.getItem('toc_' + k);
+    if (el && v !== null) el.innerHTML = v;
+  });
+  PREMISE_IDS.forEach(id => {
+    const ta = document.getElementById('ta-' + id);
+    const v  = localStorage.getItem('toc_premise_' + id);
+    if (ta && v) ta.value = v;
+  });
+}
+
+function clearAll() {
+  [...BLOCK_KEYS, ...INJECT_KEYS].forEach(k => {
+    const el = document.querySelector(`[data-key="${k}"]`);
+    if (el) el.innerHTML = '';
+    localStorage.removeItem('toc_' + k);
+  });
+  PREMISE_IDS.forEach(id => {
+    const ta = document.getElementById('ta-' + id);
+    if (ta) ta.value = '';
+    localStorage.removeItem('toc_premise_' + id);
+    closePremise(id);
+  });
+  redraw();
+}
+
+// ── Guide ─────────────────────────────────────────────────────────────────────
+function toggleGuide() {
+  const sec  = document.getElementById('guideSection');
+  const btn  = document.getElementById('btnGuide');
+  const open = sec.classList.toggle('open');
+  btn.textContent = open ? '✕ Скрыть руководство' : '? Как строить тучу';
+}
+
+// ── Premise bubbles ───────────────────────────────────────────────────────────
+let openPremiseId = null;
+
+function trunc(text, n) {
+  const t = (text || '').replace(/\s+/g, ' ').trim();
+  return t.length > n ? t.slice(0, n) + '…' : (t || '?');
+}
+
+function getHintText(id) {
+  const goal  = trunc(document.getElementById('blockGoal').innerText, 28);
+  const reqA  = trunc(document.getElementById('blockReqA').innerText, 28);
+  const preB  = trunc(document.getElementById('blockPreB').innerText, 28);
+  const reqB  = trunc(document.getElementById('blockReqB').innerText, 28);
+  const preC  = trunc(document.getElementById('blockPreC').innerText, 28);
+  const hints = {
+    'pb-ra':    `Чтобы «${reqA}», нужно «${preB}», потому что…`,
+    'ra-g':     `Чтобы «${goal}», нужно «${reqA}», потому что…`,
+    'pc-rb':    `Чтобы «${reqB}», нужно «${preC}», потому что…`,
+    'rb-g':     `Чтобы «${goal}», нужно «${reqB}», потому что…`,
+    'conflict': `Одновременно выполнить «${preB}» и «${preC}» невозможно, потому что…`,
+  };
+  return hints[id] || '';
+}
+
+function togglePremise(id, px, py) {
+  if (openPremiseId && openPremiseId !== id) closePremise(openPremiseId);
+  const bubble = document.getElementById('pb-' + id);
+  if (!bubble) return;
+
+  if (bubble.classList.contains('open')) {
+    closePremise(id);
+    return;
+  }
+
+  // Position bubble relative to wrapper
+  const wr = wrapper.getBoundingClientRect();
+  let left = px - wr.left;
+  let top  = py - wr.top - 10;
+
+  bubble.style.left = left + 'px';
+  bubble.style.top  = top  + 'px';
+
+  // Update dynamic hint
+  const hintEl = document.getElementById('hint-' + id);
+  if (hintEl) hintEl.textContent = getHintText(id);
+
+  bubble.classList.add('open');
+  openPremiseId = id;
+
+  // Keep bubble inside wrapper horizontally
+  requestAnimationFrame(() => {
+    const bw  = bubble.offsetWidth;
+    const ww  = wrapper.offsetWidth;
+    let l = parseFloat(bubble.style.left);
+    if (l + bw + 20 > ww) l = ww - bw - 20;
+    if (l < 10) l = 10;
+    bubble.style.left = l + 'px';
+    // Keep above bottom
+    const bh = bubble.offsetHeight + 30;
+    let t = parseFloat(bubble.style.top);
+    if (t + bh > wrapper.offsetHeight) t = py - wr.top - bh - 10;
+    if (t < 10) t = 10;
+    bubble.style.top = t + 'px';
+  });
+
+  setTimeout(() => document.getElementById('ta-' + id)?.focus(), 50);
+}
+
+function closePremise(id) {
+  const bubble = document.getElementById('pb-' + id);
+  if (bubble) bubble.classList.remove('open');
+  if (openPremiseId === id) openPremiseId = null;
+}
+
+function savePremise(id) {
+  const ta = document.getElementById('ta-' + id);
+  if (ta) localStorage.setItem('toc_premise_' + id, ta.value);
+}
+
+// close bubble on outside click
+document.addEventListener('click', e => {
+  if (!openPremiseId) return;
+  const bubble = document.getElementById('pb-' + openPremiseId);
+  if (bubble && !bubble.contains(e.target)) closePremise(openPremiseId);
+});
+
+// ── SVG drawing ───────────────────────────────────────────────────────────────
+const NS      = 'http://www.w3.org/2000/svg';
+const svgEl   = document.getElementById('arrowSvg');
+const wrapper = document.getElementById('diagramWrapper');
+
+function mkSvg(tag, attrs) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  return e;
+}
+
+function rectOf(el) {
+  const wr = wrapper.getBoundingClientRect();
+  const er = el.getBoundingClientRect();
+  return {
+    left:   er.left   - wr.left,
+    right:  er.right  - wr.left,
+    top:    er.top    - wr.top,
+    bottom: er.bottom - wr.top,
+    cx:     er.left   - wr.left + er.width  / 2,
+    cy:     er.top    - wr.top  + er.height / 2,
+    w:      er.width,
+    h:      er.height,
+  };
+}
+
+function svgArrow(x1, y1, x2, y2, color, premiseId) {
+  const HEAD = 13, SPREAD = Math.PI / 6;
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+  const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+
+  const g = mkSvg('g', {});
+
+  // line
+  g.appendChild(mkSvg('line', {
+    x1, y1,
+    x2: x2 - Math.cos(angle) * 0.5,
+    y2: y2 - Math.sin(angle) * 0.5,
+    stroke: color, 'stroke-width': 2, 'stroke-linecap': 'round'
+  }));
+
+  // arrowhead
+  const pts = [
+    `${x2},${y2}`,
+    `${x2 - HEAD * Math.cos(angle - SPREAD)},${y2 - HEAD * Math.sin(angle - SPREAD)}`,
+    `${x2 - HEAD * Math.cos(angle + SPREAD)},${y2 - HEAD * Math.sin(angle + SPREAD)}`
+  ].join(' ');
+  g.appendChild(mkSvg('polygon', { points: pts, fill: color }));
+
+  // clickable transparent overlay
+  if (premiseId) {
+    const hit = mkSvg('line', {
+      x1, y1, x2, y2,
+      stroke: 'transparent', 'stroke-width': 24,
+      'pointer-events': 'stroke', cursor: 'pointer'
+    });
+    hit.addEventListener('click', e => {
+      e.stopPropagation();
+      togglePremise(premiseId, mx, my);
+    });
+    g.appendChild(hit);
+
+    // small indicator dot at midpoint
+    const dot = mkSvg('circle', {
+      cx: mx, cy: my, r: 5,
+      fill: '#fff', stroke: '#f6d860', 'stroke-width': 1.5,
+      cursor: 'pointer', 'pointer-events': 'all'
+    });
+    dot.addEventListener('click', e => {
+      e.stopPropagation();
+      togglePremise(premiseId, mx, my);
+    });
+    g.appendChild(dot);
+  }
+
+  svgEl.appendChild(g);
+}
+
+function svgLightning(topX, topY, botX, botY) {
+  const color = '#d9534f';
+  const mcx = (topX + botX) / 2;
+  const h   = botY - topY;
+  const w   = Math.min(22, h * 0.28);
+  const midX = mcx, midY = (topY + botY) / 2;
+
+  const pts = [
+    [mcx,     topY],
+    [mcx + w, topY + h * 0.33],
+    [mcx - w, topY + h * 0.67],
+    [mcx,     botY],
+  ];
+
+  const g = mkSvg('g', {});
+
+  const d = pts.map(([x, y], i) => `${i === 0 ? 'M' : 'L'}${x},${y}`).join(' ');
+  g.appendChild(mkSvg('path', {
+    d, stroke: color, 'stroke-width': 2.5,
+    fill: 'none', 'stroke-linejoin': 'round', 'stroke-linecap': 'round'
+  }));
+
+  function segHead(tip, from) {
+    const angle = Math.atan2(tip[1] - from[1], tip[0] - from[0]);
+    const sz = 10, sp = Math.PI / 6;
+    const p = [
+      `${tip[0]},${tip[1]}`,
+      `${tip[0] - sz * Math.cos(angle - sp)},${tip[1] - sz * Math.sin(angle - sp)}`,
+      `${tip[0] - sz * Math.cos(angle + sp)},${tip[1] - sz * Math.sin(angle + sp)}`
+    ].join(' ');
+    g.appendChild(mkSvg('polygon', { points: p, fill: color }));
+  }
+  segHead(pts[0], pts[1]);
+  segHead(pts[3], pts[2]);
+
+  // conflict label
+  const txt = mkSvg('text', {
+    x: mcx + w + 14, y: midY + 4,
+    fill: color, 'font-size': '10', 'font-weight': '800',
+    'letter-spacing': '1.5',
+    'font-family': "'Segoe UI', system-ui, sans-serif"
+  });
+  txt.textContent = '⚡ КОНФЛИКТ';
+  g.appendChild(txt);
+
+  // clickable overlay on lightning
+  const hitPath = mkSvg('path', {
+    d, stroke: 'transparent', 'stroke-width': 24,
+    fill: 'none', 'pointer-events': 'stroke', cursor: 'pointer'
+  });
+  hitPath.addEventListener('click', e => {
+    e.stopPropagation();
+    togglePremise('conflict', midX, midY);
+  });
+  g.appendChild(hitPath);
+
+  // indicator dot
+  const dot = mkSvg('circle', {
+    cx: midX, cy: midY, r: 5,
+    fill: '#fff', stroke: '#d9534f', 'stroke-width': 1.5,
+    cursor: 'pointer', 'pointer-events': 'all'
+  });
+  dot.addEventListener('click', e => {
+    e.stopPropagation();
+    togglePremise('conflict', midX, midY);
+  });
+  g.appendChild(dot);
+
+  // dashed line to injection block
+  const rInj = rectOf(document.getElementById('blockInjection'));
+  if (rInj) {
+    g.appendChild(mkSvg('line', {
+      x1: mcx, y1: botY + 10,
+      x2: rInj.cx, y2: rInj.top,
+      stroke: '#f6d860', 'stroke-width': 1.5,
+      'stroke-dasharray': '5,5', 'stroke-linecap': 'round',
+      opacity: 0.8
+    }));
+    // small arrowhead to injection
+    const ang2 = Math.atan2(rInj.top - (botY + 10), rInj.cx - mcx);
+    const sz2 = 9, sp2 = Math.PI / 6;
+    const p2 = [
+      `${rInj.cx},${rInj.top}`,
+      `${rInj.cx - sz2 * Math.cos(ang2 - sp2)},${rInj.top - sz2 * Math.sin(ang2 - sp2)}`,
+      `${rInj.cx - sz2 * Math.cos(ang2 + sp2)},${rInj.top - sz2 * Math.sin(ang2 + sp2)}`
+    ].join(' ');
+    g.appendChild(mkSvg('polygon', { points: p2, fill: '#d69e2e', opacity: 0.7 }));
+  }
+
+  svgEl.appendChild(g);
+}
+
+function redraw() {
+  svgEl.setAttribute('width',  wrapper.offsetWidth);
+  svgEl.setAttribute('height', wrapper.offsetHeight);
+  while (svgEl.firstChild) svgEl.removeChild(svgEl.firstChild);
+
+  const gray  = '#6c7e91';
+  const rGoal = rectOf(document.getElementById('blockGoal'));
+  const rReqA = rectOf(document.getElementById('blockReqA'));
+  const rPreB = rectOf(document.getElementById('blockPreB'));
+  const rReqB = rectOf(document.getElementById('blockReqB'));
+  const rPreC = rectOf(document.getElementById('blockPreC'));
+
+  svgArrow(rPreB.left, rPreB.cy,  rReqA.right, rReqA.cy,               gray, 'pb-ra');
+  svgArrow(rReqA.left, rReqA.cy,  rGoal.right, rGoal.top + rGoal.h * 0.33, gray, 'ra-g');
+  svgArrow(rPreC.left, rPreC.cy,  rReqB.right, rReqB.cy,               gray, 'pc-rb');
+  svgArrow(rReqB.left, rReqB.cy,  rGoal.right, rGoal.top + rGoal.h * 0.67, gray, 'rb-g');
+
+  svgLightning(rPreB.cx, rPreB.bottom, rPreC.cx, rPreC.top);
+}
+
+// ── Events ────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.block, .diagram-title').forEach(el => {
+  el.addEventListener('input', () => { saveAll(); redraw(); });
+  el.addEventListener('focus', () => {
+    const tip = el.querySelector('.block-tip');
+    if (tip) tip.style.display = 'none';
+  });
+  el.addEventListener('blur', () => {
+    const tip = el.querySelector('.block-tip');
+    if (tip) tip.style.display = '';
+  });
+});
+
+// injection premise field (not .block but needs saving)
+document.getElementById('injectionMain').addEventListener('input', saveAll);
+document.getElementById('injectionPremise').addEventListener('input', saveAll);
+
+// premise textareas
+PREMISE_IDS.forEach(id => {
+  document.getElementById('ta-' + id)
+    ?.addEventListener('input', () => savePremise(id));
+});
+
+window.addEventListener('resize', redraw);
+document.addEventListener('scroll', redraw, true);
+
+const ro = new ResizeObserver(redraw);
+ro.observe(wrapper);
+document.querySelectorAll('.block, .diagram-title, #injectionMain, #injectionPremise')
+  .forEach(el => ro.observe(el));
+
+// ── PDF export (SVG → canvas → html2canvas) ───────────────────────────────────
+async function svgToImg(svgElement) {
+  // Inline the SVG styles/fonts so the exported image is self-contained
+  const s = new XMLSerializer().serializeToString(svgElement);
+  const svgData = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s);
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = svgData;
+  });
+}
+
+async function exportPDF() {
+  if (typeof html2canvas === 'undefined') {
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+  }
+  if (typeof window.jspdf === 'undefined') {
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+  }
+
+  // Close any open premise bubble before capture
+  if (openPremiseId) closePremise(openPremiseId);
+
+  // 1. Convert SVG to raster canvas
+  const svgImg   = await svgToImg(svgEl);
+  const tmpCanvas = document.createElement('canvas');
+  tmpCanvas.width  = parseInt(svgEl.getAttribute('width'))  * 2;
+  tmpCanvas.height = parseInt(svgEl.getAttribute('height')) * 2;
+  tmpCanvas.getContext('2d').drawImage(svgImg, 0, 0, tmpCanvas.width, tmpCanvas.height);
+  tmpCanvas.style.cssText =
+    `position:absolute;top:0;left:0;pointer-events:none;z-index:1;
+     width:${svgEl.getAttribute('width')}px;height:${svgEl.getAttribute('height')}px;`;
+
+  // 2. Swap SVG → canvas
+  svgEl.style.display = 'none';
+  wrapper.appendChild(tmpCanvas);
+
+  // 3. Capture
+  let cvs;
+  try {
+    cvs = await html2canvas(wrapper, { scale: 2, useCORS: true, logging: false });
+  } finally {
+    // 4. Restore
+    svgEl.style.display = '';
+    wrapper.removeChild(tmpCanvas);
+  }
+
+  // 5. Build PDF
+  const img = cvs.toDataURL('image/png');
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({
+    orientation: 'landscape', unit: 'px',
+    format: [cvs.width / 2, cvs.height / 2]
+  });
+  pdf.addImage(img, 'PNG', 0, 0, cvs.width / 2, cvs.height / 2);
+  pdf.save('thundercloud.pdf');
+}
+
+function loadScript(src) {
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+loadAll();
+requestAnimationFrame(() => requestAnimationFrame(redraw));
+</script>
+</body>
+</html>

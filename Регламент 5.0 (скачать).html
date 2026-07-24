@@ -1,0 +1,2390 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title hidden>Регламент</title>
+    <style>
+        /* ==================== 1. БАЗОВЫЕ СБРОСЫ И ОБЩИЕ СТИЛИ ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding: 40px;
+        }
+
+        /* ==================== 2. КАРТОЧКА ДОКУМЕНТА ==================== */
+        .document {
+            max-width: 1100px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .brand-bar {
+            height: 8px;
+            background: #d9534f;
+            width: 100%;
+        }
+
+        /* ==================== 3. ШАПКА ДОКУМЕНТА ==================== */
+        .document-header {
+            padding: 28px 32px 20px 32px;
+            border-bottom: 1px solid #eef2f4;
+            position: relative;
+        }
+
+        .brand {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .brand-name {
+            font-size: 28px;
+            font-weight: 800;
+            color: #d9534f;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-tagline {
+            font-size: 12px;
+            color: #7e8fa1;
+        }
+
+        .doc-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e2b3c;
+            margin-bottom: 8px;
+        }
+
+        .doc-meta {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #7e8fa1;
+            border-top: 1px solid #eef2f4;
+            padding-top: 16px;
+        }
+
+        .hidden-brand {
+            display: none;
+        }
+		/* ==================== Скрыть любой блок ==================== */
+		.hidden-section {
+			display: none;
+		}
+
+        /* ==================== 4. ОГЛАВЛЕНИЕ (СОДЕРЖАНИЕ) ==================== */
+        .document-toc {
+            padding: 20px 32px 0 32px;
+            background: #ffffff;
+            border-bottom: 1px solid #eef2f4;
+        }
+
+        .toc-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e2b3c;
+            margin-bottom: 16px;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .toc-title span {
+            background: #d9534f;
+            color: white;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-left: 12px;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px 24px;
+            margin-bottom: 20px;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eef2f4;
+            font-size: 14px;
+        }
+
+        .toc-link {
+            color: #2c3e4e;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 8px;
+        }
+
+        .toc-link:hover {
+            color: #d9534f;
+            text-decoration: underline;
+        }
+
+        .toc-status {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: #f8fafc;
+            color: #4a5a6e;
+            white-space: nowrap;
+            border: 1px solid #eef2f4;
+        }
+
+        .toc-status.approved {
+            background: #e5f6e9;
+            color: #2e7d32;
+            border-color: #c8e6c9;
+        }
+
+        .toc-status.in-progress {
+            background: #fff8e7;
+            color: #b85c00;
+            border-color: #ffe0b2;
+        }
+
+        .toc-status.planned {
+            background: #eef2f4;
+            color: #7e8fa1;
+        }
+
+        /* ==================== 5. ТЕЛО ДОКУМЕНТА ==================== */
+        .document-body {
+            padding: 24px 32px 32px 32px;
+        }
+
+        /* ==================== 6. РАЗДЕЛЫ И ЗАГОЛОВКИ ==================== */
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #d9534f;
+            margin-bottom: 16px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #d9534f;
+            display: inline-block;
+        }
+
+        .subsection-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e2b3c;
+            margin: 20px 0 12px 0;
+        }
+
+        /* ==================== 7. ТЕКСТОВЫЕ ЭЛЕМЕНТЫ ==================== */
+        .text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #2c3e4e;
+            margin-bottom: 16px;
+        }
+
+        /* ==================== 8. СПИСКИ ==================== */
+        .step-list {
+            margin: 12px 0 12px 24px;
+        }
+
+        .step-list li {
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #2c3e4e;
+        }
+
+        .step-list-numbered {
+            margin: 12px 0 12px 24px;
+            list-style-type: decimal;
+        }
+
+        .step-list-numbered li {
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #2c3e4e;
+        }
+		        /* Аккордеон с галочкой */
+        .accordion-check summary::before {
+            content: "✓" !important;
+            background: #e5f6e9 !important;
+            color: #2e7d32 !important;
+        }
+
+        /* ==================== 9. ТАБЛИЦЫ ==================== */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+
+        .info-table th {
+            background: #f8fafc;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #4a5a6e;
+            border: 1px solid #eef2f4;
+        }
+
+        .info-table td {
+            padding: 10px 12px;
+            border: 1px solid #eef2f4;
+            vertical-align: top;
+            color: #1e2b3c;
+        }
+
+        .structure-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+
+        .structure-table td {
+            padding: 8px 12px;
+            border: 1px solid #eef2f4;
+            font-size: 13px;
+        }
+
+        /* ==================== 10. БЛОКИ С ВЫДЕЛЕНИЕМ ==================== */
+        .reference {
+            background: #f0f7ff;
+            border-left: 4px solid #5bc0de;
+            padding: 10px 16px;
+            margin: 12px 0;
+            font-size: 12px;
+            color: #2c6b9e;
+            border-radius: 6px;
+        }
+
+        .ref-link {
+            color: #d9534f;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+        }
+
+        .note {
+            background: #fef7f5;
+            border-left: 4px solid #d9534f;
+            padding: 14px 18px;
+            margin: 20px 0;
+            font-size: 13px;
+            color: #4a5a6e;
+            border-radius: 8px;
+        }
+
+        .principle {
+            background: #f8fafc;
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 500;
+            color: #d9534f;
+            border: 1px solid #eef2f4;
+        }
+
+        .work-in-progress {
+            background: #fff8e7;
+            border-left: 4px solid #f0ad4e;
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-size: 13px;
+            color: #8a6d3b;
+            border-radius: 8px;
+        }
+
+        /* ==================== 11. СПИСОК ВЕХ ==================== */
+        .veha-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px 20px;
+            margin: 12px 0 16px 24px;
+        }
+
+        .veha-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .veha-romb {
+            color: #d9534f;
+            font-size: 14px;
+        }
+
+        .veha-text {
+            font-size: 14px;
+            color: #2c3e4e;
+        }
+
+        /* ==================== 12. ГЛОССАРИЙ ==================== */
+        .glossary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .glossary-item {
+            border-bottom: 1px solid #eef2f4;
+            padding: 10px 0;
+            display: flex;
+        }
+
+        .glossary-term {
+            width: 200px;
+            font-weight: 600;
+            color: #d9534f;
+            font-size: 13px;
+        }
+
+        .glossary-desc {
+            flex: 1;
+            font-size: 13px;
+            color: #4a5a6e;
+        }
+
+        /* ==================== 13. ПОДВАЛ ==================== */
+        .footer-note {
+            margin-top: 32px;
+            padding-top: 20px;
+            border-top: 1px solid #eef2f4;
+            font-size: 11px;
+            color: #9aa9b9;
+            text-align: center;
+        }
+
+        /* ==================== 14. АДАПТИВНОСТЬ ==================== */
+        @media (max-width: 900px) {
+            .toc-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .toc-grid {
+                grid-template-columns: 1fr;
+            }
+            .veha-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ==================== ПРИЛОЖЕНИЯ ==================== */
+        .appendix-block {
+            background: #fafbfc;
+            border-radius: 16px;
+            padding: 24px 28px;
+            margin: 32px 0 24px 0;
+            border: 1px solid #dce3e9;
+            border-left: 6px solid #d9534f;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .appendix-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px dashed #dce3e9;
+        }
+
+        .appendix-icon {
+            font-size: 22px;
+        }
+
+        .appendix-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e2b3c;
+        }
+
+        .appendix-subtitle {
+            font-size: 14px;
+            color: #7e8fa1;
+            margin-top: 4px;
+        }
+
+        .appendix-hint {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 12px 16px;
+            background: rgba(217, 83, 79, 0.06);
+            border-radius: 8px;
+            font-size: 13px;
+            color: #4a5a6e;
+        }
+
+        /* ==================== СТРУКТУРА ДОКУМЕНТА ==================== */
+        .structure-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .structure-card {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            background: #fafbfc;
+            border: 1px solid #eef2f4;
+            border-radius: 10px;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .structure-card:hover {
+            background: #ffffff;
+            border-color: #d9534f;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+
+        .struct-num {
+            width: 28px;
+            height: 28px;
+            background: #d9534f10;
+            color: #d9534f;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin-right: 14px;
+            font-size: 14px;
+            border: 1px solid #d9534f20;
+        }
+
+        .struct-link {
+            color: #1e2b3c;
+            text-decoration: none;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .struct-link:hover {
+            color: #d9534f;
+            text-decoration: underline;
+        }
+
+        .struct-status {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #eef2f4;
+            color: #6c7a89;
+            white-space: nowrap;
+        }
+
+        .struct-status.approved {
+            background: #e5f6e9;
+            color: #2e7d32;
+        }
+
+        .struct-status.progress {
+            background: #fff8e7;
+            color: #b85c00;
+        }
+
+        @media (max-width: 600px) {
+            .structure-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ==================== АНИМАЦИЯ "ДЫХАНИЕ" ==================== */
+		@keyframes softPulse {
+		0% {
+			box-shadow: 0 4px 12px rgba(217, 83, 79, 0.03);
+			border-color: #eef2f4;
+			background: #ffffff;
+		}
+		50% {
+			box-shadow: 0 8px 22px rgba(217, 83, 79, 0.20);
+			border-color: #e8b4b0;
+			background: #fef5f4;
+		}
+		100% {
+			box-shadow: 0 4px 12px rgba(217, 83, 79, 0.03);
+			border-color: #eef2f4;
+			background: #ffffff;
+			}
+		}
+
+        .pulse-card {
+            animation: softPulse 3s ease-in-out infinite;
+            transition: box-shadow 0.2s, border-color 0.2s;
+			}
+
+		@keyframes tocPulse {
+		0% { background: transparent; border-left-color: transparent; }
+		50% { background: #fce8e5; border-left-color: #d9534f; }
+		100% { background: transparent; border-left-color: transparent; }
+		}
+
+        .toc-item.pulse-attention {
+            animation: tocPulse 3s ease-in-out infinite;
+            border-left: 3px solid transparent;
+            padding-left: 5px;
+            transition: background 0.2s;
+        }
+		/* СЕРОЕ ДЫХАНИЕ ДЛЯ РАЗДЕЛОВ «В РАЗРАБОТКЕ» */
+		@keyframes softPulseGray {
+		0% {
+			box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+			border-color: #eef2f4;
+			background: #ffffff;
+		}
+		50% {
+			box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+			border-color: #cbd3da;
+			background: #f7f8fa;
+		}
+		100% {
+			box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+			border-color: #eef2f4;
+			background: #ffffff;
+			}
+		}
+	.pulse-card-gray {
+		animation: softPulseGray 4s ease-in-out infinite; /* 4 секунды – чуть медленнее */
+		transition: box-shadow 0.3s, border-color 0.3s;
+		}
+		/* Красное дыхание для блоков "Проблема" */
+		@keyframes problemPulse {
+			0% {
+				background: #fef7f5;
+				box-shadow: 0 2px 8px rgba(217, 83, 79, 0.04);
+				border-left-color: #d9534f;
+			}
+			50% {
+				background: #fef0ee;
+				box-shadow: 0 4px 14px rgba(217, 83, 79, 0.12);
+				border-left-color: #c0392b;
+			}
+			100% {
+				background: #fef7f5;
+				box-shadow: 0 2px 8px rgba(217, 83, 79, 0.04);
+				border-left-color: #d9534f;
+			}
+		}
+
+		.problem-block {
+			background: #fef7f5;
+			border-left: 4px solid #d9534f;
+			padding: 14px 18px;
+			margin: 20px 0;
+			font-size: 14px;
+			color: #4a3a39;
+			border-radius: 8px;
+			line-height: 1.5;
+			animation: problemPulse 2.5s ease-in-out infinite;
+		}
+		/* Серое дыхание для пунктов оглавления */
+		@keyframes tocPulseGray {
+			0% { background: transparent; border-left-color: transparent; }
+			50% { background: #f5f6f8; border-left-color: #b0bec5; }
+			100% { background: transparent; border-left-color: transparent; }
+		}
+
+		.toc-item.pulse-attention-gray {
+			animation: tocPulseGray 4s ease-in-out infinite;
+			border-left: 3px solid transparent;
+			padding-left: 5px;
+		}
+		/* Комбинированный статус: утвержден + активная фаза */
+		.toc-status.approved-active {
+			background: linear-gradient(135deg, #e5f6e9 0%, #fff8e7 100%);
+			color: #2e7d32;
+			border-color: #c8e6c9;
+			font-weight: 700;
+		}
+		/* Для структуры */
+		.struct-status.approved-active {
+			background: linear-gradient(135deg, #e5f6e9 0%, #fff8e7 100%);
+			color: #2e7d32;
+			font-weight: 700;
+		}
+		/* Зелёное дыхание для решений */
+		@keyframes softPulseGreen {
+			0% {
+				box-shadow: 0 4px 12px rgba(39, 174, 96, 0.03);
+				border-color: #c8e6c9;
+				background: #ffffff;
+			}
+			50% {
+				box-shadow: 0 8px 22px rgba(39, 174, 96, 0.20);
+				border-color: #81c784;
+				background: #f1f8f4;
+			}
+			100% {
+				box-shadow: 0 4px 12px rgba(39, 174, 96, 0.03);
+				border-color: #c8e6c9;
+				background: #ffffff;
+			}
+		}
+		.pulse-card-green {
+			animation: softPulseGreen 3s ease-in-out infinite;
+		}
+		/* Раскрывающийся блок */
+		.accordion {
+			border: 1px solid #eef2f4;
+			border-radius: 12px;
+			margin: 16px 0;
+			padding: 12px 16px;
+			background: #fafbfc;
+			transition: border-color 0.2s;
+		}
+		.accordion[open] {
+			border-color: #dce3e9;
+		}
+		.accordion summary {
+			font-weight: 600;
+			font-size: 14px;
+			color: #1e2b3c;
+			cursor: pointer;
+			outline: none;
+			list-style: none;               /* убираем стандартный треугольник */
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.accordion summary::-webkit-details-marker {
+			display: none;
+		}
+		.accordion summary::before {
+			content: "+";
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 20px;
+			height: 20px;
+			border-radius: 6px;
+			background: #d9534f10;
+			color: #d9534f;
+			font-weight: 700;
+			font-size: 14px;
+			transition: transform 0.2s;
+		}
+		.accordion[open] summary::before {
+			content: "−";
+			background: #d9534f20;
+		}
+		/* ==================== COLLAPSIBLE (СВОРАЧИВАЕМЫЙ БЛОК) ==================== */
+		.collapsible {
+			border: 1px solid #eef2f4;
+			border-radius: 16px;
+			margin: 20px 0;
+			background: #fff;
+			overflow: hidden;
+			transition: box-shadow 0.3s;
+		}
+		.collapsible.active {
+			box-shadow: 0 6px 18px rgba(217, 83, 79, 0.08);
+			border-color: #f1cdca;
+		}
+
+		.collapsible-trigger {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 16px 20px;
+			font-size: 16px;
+			font-weight: 600;
+			cursor: pointer;
+			user-select: none;
+			color: #1e2b3c;
+			background: #fafbfc;
+			border-bottom: 1px solid transparent;
+			transition: background 0.2s, border-color 0.2s;
+			line-height: 1;          /* ← выравнивает текст с иконкой */
+		}
+		.collapsible.active .collapsible-trigger {
+			background: #fff;
+			border-bottom-color: #eef2f4;
+		}
+		.collapsible-trigger:hover {
+			background: #f5f6f8;
+		}
+
+		.collapse-icon {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 36px;
+			height: 36px;
+			border-radius: 8px;
+			background: #d9534f10;
+			color: #d9534f;
+			font-weight: 700;
+			font-size: 22px;
+			line-height: 1;           /* ← убирает лишнее пространство вокруг текста */
+			flex-shrink: 0;           /* ← запрещает иконке сжиматься */
+			transition: transform 0.3s;
+		}
+
+		.collapsible.active .collapse-icon {
+			transform: rotate(45deg); /* из + в × */
+		}
+
+		.collapsible-content {
+			max-height: 0;
+			overflow: hidden;
+			transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+		}
+		.collapsible-content-inner {
+			padding: 0;               /* ← убираем лишний отступ, контент сам задаст отступы */
+		}
+		/* Навигация */
+		html {
+    scroll-behavior: smooth;
+		}
+    </style>
+</head>
+<body>
+    <div class="document">
+        <div class="brand-bar"></div>
+        
+        <div class="document-header">
+            <div class="brand hidden-brand">
+                <div>
+                    <div class="brand-name">РЕГЛАМЕНТ</div>
+                    <div class="brand-tagline">Инжиниринговая компания</div>
+                </div>
+                <div class="brand-tagline">Инжиниринг • Производство • Поставка</div>
+            </div>
+            <div class="doc-title">Регламент компании</div>
+            <div class="doc-meta">
+                <span>Версия: 5.0</span>
+                <span>Дата:04.05.2026</span>
+                <span>Статус: утвержден</span>
+            </div>
+        </div>   
+        <!-- ==================== СОДЕРЖАНИЕ (СВОРАЧИВАЕМОЕ) ==================== -->
+        <div class="document-toc collapsible" style="padding: 16px 32px; background: #ffffff; border-bottom: 1px solid #eef2f4; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 0;">
+            <div class="collapsible-trigger">
+                <span class="collapse-icon">+</span>
+                <span style="font-size: 16px; font-weight: 700; color: #1e2b3c; letter-spacing: 0.3px;">Содержание регламента <span style="background: #d9534f; color: white; font-size: 12px; padding: 2px 8px; border-radius: 20px; margin-left: 12px;">v.5.0</span></span>
+            </div>
+            <div class="collapsible-content">
+                <div class="collapsible-content-inner" style="padding: 0;">
+                    <!-- Сетка оглавления -->
+                    <div class="toc-grid">
+                        <div class="toc-item"><a href="#section1" class="toc-link">1. Постановка задач</a><span class="toc-status approved">утвержден</span></div>
+                        <div class="toc-item"><a href="#section2" class="toc-link">2. Сроки выполнения</a><span class="toc-status approved">утвержден</span></div>
+                        <div class="toc-item"><a href="#section3" class="toc-link">3. Контроль выполнения</a><span class="toc-status approved">утвержден</span></div>
+                        <div class="toc-item"><a href="#section4" class="toc-link">4. Взаимодействие в чате</a><span class="toc-status approved">утвержден</span></div>
+                        <div class="toc-item"><a href="#section5" class="toc-link">5. Родительские задачи</a><span class="toc-status approved">утвержден</span></div>
+                        <div class="toc-item"><a href="#section6" class="toc-link">6. Многоэтапные задачи</a><span class="toc-status approved">утвержден</span></div>
+                        <div class="toc-item"><a href="#section7" class="toc-link">7. Контроль и ответственность</a><span class="toc-status approved">утвержден</span></div>
+                        <div class="toc-item"><a href="#section8" class="toc-link">8. CRM</a><span class="toc-status in-progress">в очереди</span></div>
+                        <div class="toc-item"><a href="#section9" class="toc-link">9. Документооборот</a><span class="toc-status in-progress">в очереди</span></div>
+                        <div class="toc-item"><a href="#section10" class="toc-link">10. Производство</a><span class="toc-status approved-active">утвержден • внедряется</span></div>
+                        <div class="toc-item"><a href="#section11" class="toc-link">11. Снабжение</a><span class="toc-status approved">утвержден</span></div>
+                        <div class="toc-item"><a href="#section12" class="toc-link">12. Письма и деловая переписка</a><span class="toc-status approved">утвержден</span></div>
+                        <div class="toc-item"><a href="#sub-12-9" class="toc-link">12.9. Отправка письма</a><span class="toc-status approved">утвержден</span></div>
+                        <div class="toc-item"><a href="#appendix-glossary" class="toc-link">Приложение 1. Глоссарий</a><span class="toc-status approved">утвержден</span></div>
+                        <div class="toc-item"><a href="#appendix-matrix" class="toc-link">Приложение 2. Проблемы и решения</a><span class="toc-status in-progress">в разработке</span></div>
+						<div class="toc-item"><a href="#section-proposals" class="toc-link">Предложить дополнить и улучшить</a><span class="toc-status approved">утвержден</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ==================== КОНЕЦ СОДЕРЖАНИЯ ==================== -->
+        
+        <div class="document-body">
+		
+		
+		
+		
+								<!-- ==================== НАРУШИТЕЛИ РЕГЛАМЕНТА ==================== -->
+			<div class="section hidden-section" id="section-violators">
+				<div style="background: #fff5f5; border-radius: 16px; padding: 20px 24px; margin: 20px 0; border: 1px solid #f1cdca; box-shadow: 0 4px 12px rgba(217, 83, 79, 0.06); animation: violatorBlink 1.2s ease-in-out infinite;">
+					
+					<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+						<span style="font-size: 22px;">⚠️</span>
+						<span style="font-weight: 700; color: #c0392b; font-size: 18px;">Нарушители регламента (в разработке)</span>
+					</div>
+					
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+						<thead>
+							<tr style="background: #fce4e4; color: #000000;">
+								<th style="padding: 10px 12px; text-align: left; border-bottom: 2px solid #e6a8a5;">Сотрудник</th>
+								<th style="padding: 10px 12px; text-align: left; border-bottom: 2px solid #e6a8a5;">Нарушение</th>
+								<th style="padding: 10px 12px; text-align: left; border-bottom: 2px solid #e6a8a5;">Дата</th>
+								<th style="padding: 10px 12px; text-align: left; border-bottom: 2px solid #e6a8a5;">Меры</th>
+								<th style="padding: 10px 12px; text-align: left; border-bottom: 2px solid #e6a8a5;">Статус</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr style="background: #ffe6e6;">
+								<td style="padding: 10px 12px; border-bottom: 1px solid #f1cdca;">Фамилия имя отчество</td>
+								<td style="padding: 10px 12px; border-bottom: 1px solid #f1cdca;">Пример. Нарушение пункта <a href="#sub-12-9" class="ref-link">12.9</a></td>
+								<td style="padding: 10px 12px; border-bottom: 1px solid #f1cdca;">24.04.2026</td>
+								<td style="padding: 10px 12px; border-bottom: 1px solid #f1cdca;">Пример. Удаление Outlook со всех рабочих компьютеров компании</td>
+								<td style="padding: 10px 12px; border-bottom: 1px solid #f1cdca; color: #2e7d32; font-weight: 600;">Устранено</td>
+							</tr>
+							<!-- Сюда добавляйте новые строки -->
+							<tr style="background: #ffe6e6;">
+								<td style="padding: 10px 12px; border-bottom: 1px solid #f1cdca;">Фамилия имя отчество</td>
+								<td style="padding: 10px 12px; border-bottom: 1px solid #f1cdca;">Пример. Нарушение пункта <a href="#sub-5-6" class="ref-link">5.6</a></td>
+								<td style="padding: 10px 12px; border-bottom: 1px solid #f1cdca;">24.04.2026</td>
+								<td style="padding: 10px 12px; border-bottom: 1px solid #f1cdca;">???</td>
+								<td style="padding: 10px 12px; border-bottom: 1px solid #f1cdca; color: #c0392b; font-weight: 600;">Не устранено</td>
+							</tr>
+							<!-- Сюда добавляйте новые строки -->
+						</tbody>
+					</table>
+					
+					<div style="margin-top: 14px; font-size: 12px; color: #7a4a48;">
+						Список актуализируется и обновляется.
+					</div>
+				</div>
+			</div>
+
+		
+		
+		
+		
+            <!-- ==================== РАЗДЕЛ 1 ==================== -->
+            <div class="section" id="section1">
+                <div class="section-title">1. Постановка задач</div>
+                <div class="subsection-title" id="sub-1-1">1.1. Заголовок</div>
+                <div class="text">Заголовок задачи должен быть сформулирован в глагольной форме (что нужно сделать).</div>
+                <div class="subsection-title" id="sub-1-2">1.2. Описание</div>
+                <div class="text">Описание задачи должно содержать все необходимые подробности, вложения, ссылки на CRM.</div>
+                <div class="subsection-title" id="sub-1-3">1.3. Готовность</div>
+                <div class="text">Перед постановкой убедиться, что у исполнителя есть вся информация.</div>
+                <div class="subsection-title" id="sub-1-4">1.4. Уточнение</div>
+                <div class="text">Можно сразу в чате задачи уточнить, всё ли понятно исполнителю.</div>
+                <div class="reference"><strong>Ссылки:</strong> порядок работы с чатом задачи — <a href="#section4" class="ref-link">раздел 4</a></div>
+            </div>
+            
+            <!-- ==================== РАЗДЕЛ 2 ==================== -->
+            <div class="section" id="section2">
+                <div class="section-title">2. Сроки выполнения</div>
+                <div class="subsection-title" id="sub-2-1">2.1. Срок</div>
+                <div class="text">Нельзя ставить срок выполнения задачи на текущий день. Это гарантировано приводит к срыву сроков по запланированным задачам и в итоге портит отчётность по эффективности.</div>
+                <div class="subsection-title" id="sub-2-2">2.2. Срочная задача</div>
+                <div class="text">Если задача срочная — срок ставится на завтра, а сотруднику обращается лично с просьбой выполнить задачу сегодня.</div>
+                <div class="subsection-title" id="sub-2-3">2.3. Переносы</div>
+                <div class="text">Допускается не более двух переносов срока одной задачи. Если лимит переносов исчерпан — необходимо запросить изменение срока у постановщика.</div>
+                <div class="reference"><strong>Ссылки:</strong> ответственность за нарушение сроков — <a href="#section7" class="ref-link">раздел 7</a></div>
+            </div>
+            
+            <!-- ==================== РАЗДЕЛ 3 ==================== -->
+            <div class="section" id="section3">
+                <div class="section-title">3. Контроль выполнения</div>
+                <div class="subsection-title" id="sub-3-1">3.1. Проконтролировать после выполнения</div>
+                <div class="text">Для важных задач использовать опцию «Проконтролировать задачу после выполнения».</div>
+                <div class="subsection-title" id="sub-3-2">3.2. Уведомления</div>
+                <div class="text">Регулярно проверять «Уведомления» (колокольчик) и очищать.</div>
+                <div class="subsection-title" id="sub-3-3">3.3. Завершение</div>
+                <div class="text">При завершении задачи обязательно заполнять поле «Результат» и прикреплять выполненную работу.</div>
+                <div class="reference"><strong>Ссылки:</strong> завершение родительских задач — <a href="#sub-5-3" class="ref-link">5.3</a>; эстафетных — <a href="#sub-6-4" class="ref-link">6.4</a></div>
+            </div>
+            
+            <!-- ==================== РАЗДЕЛ 4 ==================== -->
+            <div class="section" id="section4">
+                <div class="section-title">4. Взаимодействие в чате задачи</div>
+                <div class="subsection-title" id="sub-4-1">4.1. Вопросы, уточнения, сомнения</div>
+                <div class="text">Все вопросы, уточнения, сомнения обсуждать в чате задачи. Если что-то непонятно — задавать вопросы сразу, чтобы уверенно приступить к работе.</div>
+                <div class="subsection-title" id="sub-4-2">4.2. Начало работы</div>
+                <div class="text">Исполнитель должен нажимать кнопку «Начать», чтобы постановщик видел, что работа выполняется.</div>
+                <div class="reference"><strong>Ссылки:</strong> уточнения при постановке — <a href="#sub-1-4" class="ref-link">1.4</a></div>
+            </div>
+            
+            <!-- ==================== РАЗДЕЛ 5 ==================== -->
+        <div class="section" id="section5">
+			<div class="pulse-card" style="background: #ffffff; border-radius: 16px; padding: 24px 28px; margin: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid #eef2f4;">
+                <div class="section-title">5. Родительские задачи и работа с письмами</div><span class="toc-status approved-active">утвержден • внедряется</span>
+				<div class="reference"><strong>Ссылка на инструкцию:</strong> Открыть инструкцию (внутренний ресурс)</div>
+                <div class="subsection-title" id="sub-5-1">5.1. Родительская задача</div>
+                <div class="text">Родительская задача создаётся автоматически на этапе «Заявки». Постановщик не создаёт родительскую задачу вручную — система формирует её автоматически на начальном этапе воронки продаж «Заявки».</div>
+				<div class="text">Формат названия родительской задачи: «Название сделки (кратко) ГЛАВНАЯ ЗАДАЧА». Пример: «Сепаратор 1-V-1501 (ГЛАВНАЯ ЗАДАЧА)»..</div>
+                <div class="text">Постановщик может найти родительскую задачу в группе «Продажи» по названию сделки.</div>
+                <div class="subsection-title" id="sub-5-2">5.2. Дочерние задачи</div>
+                <div class="text">Создаются с обязательной привязкой к родительской. При создании задачи по кнопке "Бизнес процесс", в карточке Сделки, привязка происходит автоматически. При ручном создании постановщик указывает Элемент CRM и родительскую задачу, если родительская задача не создана (Смотри в сделке ID Главной задачи) ее тоже можно создатьпо по кнопке «Бизнес-процессы»<em>(см. <a href="#sub-3-3" class="ref-link">3.3</a>)</em>.</div>
+                <div class="subsection-title" id="sub-5-3">5.3. Завершение родительской задачи</div>
+                <div class="text">Родительские задачи завершаются автоматически с завершением сделки.</div>
+                <div class="subsection-title" id="sub-5-4">5.4. Ошибочные задачи</div>
+                <div class="text">Не пытаться удалить задачу, завершать с пометкой «Создано по ошибке» и вызывать администратора.</div>
+                <div class="subsection-title" id="sub-5-5">5.5. Общий принцип</div>
+                <div class="principle">«Если задачи нет в системе — значит, её не существовало.»</div>
+                <div class="subsection-title" id="sub-5-6">5.6. Задачи из писем заказчиков и контрагентов</div>
+				<div class="problem-block">
+					<strong>Проблема 1. Слепое перенаправление писем</strong><br>
+					Входящие письма от Заказчиков и контрагентов часто перенаправляются сотрудникам (чаще всего в техотдел) без пояснений. Исполнитель не понимает, что именно нужно сделать, какой результат ожидается и в какие сроки. Это приводит к дополнительным уточнениям, затягивает выполнение и создаёт путаницу.
+				</div>
+				<div class="problem-block">
+					<strong>Проблема 2. Один контакт — несколько менеджеров и сделок</strong><br>
+					Один и тот же контакт может быть привязан к разным менеджерам и участвовать одновременно в нескольких сделках. Система не может автоматически определить, к какой сделке относится письмо. Ручная привязка требует времени, создаёт риск ошибки, а важные вложения и обсуждения рискуют остаться вне истории сделки.
+				</div>
+                <div class="text"><strong>Решение.</strong> Вместо перенаправления письма создаётся задача из письма. Это обязует постановщика изучить письмо и сформулировать задачу с чётким желаемым результатом, а задача становится связующим звеном между письмом и сделкой (прикреплять задачи к сделкам очень просто, может быть одна задача на множество сделок).</div>
+                
+				
+				                <details class="accordion">
+                    <summary>Правила создания задачи из письма (чек-лист)</summary>
+                    <div style="padding: 12px 0 0 0;">
+                        <ol class="step-list" style="list-style-type: decimal;">
+                            <li><strong>Изучить письмо.</strong> Постановщик вникает в суть и формулирует желаемый результат.</li>
+                            <li><strong>Сформулировать название.</strong> Кратко, в глагольной форме (3-4 слова).</li>
+                            <li><strong>Оставить «Письмо:».</strong> Это слово система добавляет автоматически в начало названия.</li>
+                            <li><strong>Добавить описание.</strong> При необходимости дополнить контекстом (подробностями) для исполнителя.</li>
+                            <li><strong>Привязать задачу.</strong> К родительской задаче, Элементу CRM (Сделке) и группе «Продажи» <em>(см. <a href="#sub-5-2" class="ref-link">5.2</a>)</em>.</li>
+                        </ol>
+                        <div class="text" style="margin-top: 12px;">После выполнения чек-листа:</div>
+                        <ul class="step-list">
+                            <li>Письмо привязано к задаче, задача — к сделке. Ручная привязка письма к сделке не обязательна.</li>
+                            <li>Исполнитель получает готовую задачу с понятным действием, а не письмо для самостоятельной расшифровки.</li>
+                            <li>Участники задачи имеют доступ к письму внутри задачи. Вся переписка сохраняется в Сделке.</li>
+                        </ul>
+                    </div>
+					<div class="reference"><strong>Ссылка на инструкцию:</strong> Открыть инструкцию (внутренний ресурс)</div>
+                </details>
+				
+				
+				
+            </div>
+		</div>            
+            <!-- ==================== РАЗДЕЛ 6 ==================== -->
+            <div class="section" id="section6">
+                <div class="section-title">6. Работа с многоэтапными (эстафетными) задачами</div>
+                <div class="text"><em>Для задач с цепочкой исполнителей.</em></div>
+                <div class="reference"><strong>Связанные правила:</strong> <a href="#sub-3-3" class="ref-link">3.3</a>, <a href="#section4" class="ref-link">4</a>, <a href="#section5" class="ref-link">5</a></div>
+                <div class="subsection-title" id="sub-6-1">6.1. Создание и назначение</div>
+                <div class="text">Постановщик создаёт задачу на первого исполнителя, наблюдатели — последующие участники.</div>
+                <div class="subsection-title" id="sub-6-2">6.2. Фиксация результата исполнителем</div>
+                <ul class="step-list">
+                    <li>Прикрепляет работу в «Результат» <em>(см. <a href="#sub-3-3" class="ref-link">3.3</a>)</em>.</li>
+                    <li>Пишет в чат чёткое сообщение («Согласовано», «Расчёт выполнен»…).</li>
+                    <li>Не завершает задачу.</li>
+                </ul>
+                <div class="subsection-title" id="sub-6-3">6.3. Передача эстафеты</div>
+                <div class="text">Постановщик меняет исполнителя и пишет в чат <code>«@[Имя], прошу принять в работу»</code>.</div>
+                <div class="subsection-title" id="sub-6-4">6.4. Завершение</div>
+                <div class="text">Последний исполнитель или постановщик завершает задачу <em>(см. <a href="#sub-3-3" class="ref-link">3.3</a>)</em>.</div>
+                <div class="subsection-title" id="sub-6-5">6.5. Контроль</div>
+                <div class="text">Наблюдатели следят в чате. Постановщик контролирует процесс, крайние сроки на исполнение и общий срок</div>
+				<div class="reference"><strong>Ссылка на инструкцию:</strong> Открыть инструкцию (внутренний ресурс)</div>
+            </div>            
+            <!-- ==================== РАЗДЕЛ 7 ==================== -->
+            <div class="section" id="section7">
+			<div class="pulse-card-gray" style="background: #ffffff; border-radius: 16px; padding: 24px 28px; margin: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid #eef2f4;">
+    <!-- Содержимое раздела -->
+                <div class="section-title">7. Контроль и ответственность</div>
+                <div class="text"><strong>Кто контролирует соблюдение регламента:</strong></div>
+                <ul class="step-list"><li>Операционный менеджер</li><li>Технический директор</li><li>Руководители отделов</li></ul>
+                <div class="text"><strong>Что считается нарушением:</strong></div>
+                <ul class="step-list">
+                    <li>Постановка задачи без заголовка в глагольной форме<em>(<a href="#sub-1-1" class="ref-link">1.1</a>)</em></li>
+                    <li>Отсутствие привязки к сделке и родительской задаче <em>(<a href="#sub-5-2" class="ref-link">5.2</a>)</em></li>
+                    <li>Установка крайнего срока выполнения на текущий день<em>(<a href="#sub-2-1" class="ref-link">2.1</a>)</em></li>
+                    <li>Завершение задачи без заполнения поля «Результат» <em>(<a href="#sub-3-3" class="ref-link">3.3</a>)</em></li>
+                    <li>Перенаправление письма без создания задачи <em>(<a href="#sub-5-6" class="ref-link">5.6</a>)</em></li>
+					<li>Отправка письма Клиентам, Заказчикам, Партнерам из почты, а не из CRM<em>(<a href="#sub-5-6" class="ref-link">5.6</a>)</em></li>
+                </ul>
+            </div>
+            
+            <!-- ==================== РАЗДЕЛ 8 ==================== -->
+            <div class="section" id="section8">
+                <div class="section-title">8. CRM <span style="font-size: 14px; color: #f0ad4e;">(в очереди)</span></div>
+                <div class="work-in-progress">Раздел находится в очереди на разработку</div>
+            </div>
+            
+            <!-- ==================== РАЗДЕЛ 9 ==================== -->
+            <div class="section" id="section9">
+                <div class="section-title">9. Документооборот <span style="font-size: 14px; color: #f0ad4e;">(в очереди)</span></div>
+                <div class="work-in-progress">Раздел находится в очереди на разработку</div>
+            </div>
+            
+			
+			<!-- ==================== РАЗДЕЛ 10. ПРОИЗВОДСТВО ==================== -->
+<div class="section" id="section10">
+    <div class="pulse-card" style="background: #ffffff; border-radius: 16px; padding: 24px 28px; margin: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid #eef2f4; transition: box-shadow 0.3s, border-color 0.3s;">
+        
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 6px; border-bottom: 2px solid #d9534f;">
+            <span style="font-size: 20px; font-weight: 700; color: #d9534f;">10. Производство</span>
+            <span class="toc-status approved-active" style="font-size: 13px;">утвержден • внедряется</span>
+        </div>
+
+       
+	   
+	   
+	   
+	   
+	   
+	                   <!-- 10.1. Передача заказа от продаж к РУПу (Вводная по проекту) -->
+                <div class="subsection-title" id="sub-10-1">10.1. Передача заказа от продаж к РУПу</div>
+                <div class="text" style="margin-bottom: 12px;">Вводная встреча, на которой менеджер передаёт руководителю проекта всю критически важную информацию о сделке.</div>
+
+                <details class="accordion" style="margin-bottom: 12px;">
+                    <summary>1. Цель вводной встречи</summary>
+                    <div style="padding: 12px 0;">
+                        <div class="text" style="margin-bottom: 8px;">Обеспечить бесшовную передачу информации от специалиста по продажам (который вёл переговоры с Заказчиком) к Руководителю проектов (РП), который будет реализовывать обязательства. Встреча проводится ещё до подписания спецификации или сразу после подписания, чтобы:</div>
+                        <ul class="step-list">
+                            <li>РП понимал специфику проекта, нюансы общения с Заказчиком и неявные договорённости;</li>
+                            <li>РП мог на раннем этапе выявить риски (сроки, материалы, сложность изготовления).</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="accordion" style="margin-bottom: 12px;">
+                    <summary>2. Когда происходит</summary>
+                    <div style="padding: 12px 0;">
+                        <div class="text" style="margin-bottom: 0;">На этапе согласования финальной спецификации с Заказчиком, сразу после подписания или при выполненных условиях запуска (например сразу после получения гарантийного письма).</div>
+                    </div>
+                </details>
+
+                <details class="accordion" style="margin-bottom: 12px;">
+                    <summary>3. Кто инициирует</summary>
+                    <div style="padding: 12px 0;">
+                        <div class="text" style="margin-bottom: 0;">Система создаёт задачу без крайнего срока на стадии «Запустить заказ» и ждёт финальной стадии согласования спецификации. Технический директор назначает постановщика (РП или оставляет себя) и исполнителя — специалиста по продажам.</div>
+						<div class="reference" style="margin-top: 12px;">
+							<strong>Пример обращения для специалиста по продажам:</strong> «@РП, спецификация ушла Заказчику на финальное согласование. До подписания договора нам нужно провести вводную по проекту. Записываю встречу на [дата, время]»
+						</div>
+                    </div>
+                </details>
+
+                <details class="accordion" style="margin-bottom: 12px;">
+                    <summary>4. Формат встречи</summary>
+                    <div style="padding: 12px 0;">
+                        <ul class="step-list" style="margin-bottom: 0;">
+                            <li>Встреча в календаре, продолжительность 30–60 минут (в зависимости от сложности проекта).</li>
+                            <li>Участники: специалист по продажам, Руководитель проектов (специалист по поставке оборудования, технический директор, начальник ОМТО, инспектор — по необходимости).</li>
+                            <li>Формат: очно (в переговорке или онлайн в Битрикс 24).</li>
+                            <li>Каллендарная встреча привязывается к Сделке (Элемент CRM).</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="accordion" style="margin-bottom: 12px;">
+                    <summary>5. Повестка встречи (что менеджер обязан передать)</summary>
+                    <div style="padding: 12px 0;">
+                        <div class="text" style="margin-bottom: 8px;">Менеджер передаёт РП следующие сведения:</div>
+                        <ul class="step-list" style="margin-bottom: 0;">
+                            <li><strong>Контекст сделки:</strong> как нашли Заказчика, кто ключевые лица, какие были сложности в переговорах.</li>
+                            <li><strong>Технические особенности:</strong> что необычного в спецификации, были ли изменения в процессе согласования.</li>
+                            <li><strong>Обещания Заказчику:</strong> сроки, условия, неформальные договорённости.</li>
+                            <li><strong>Документы:</strong> текущая версия спецификации, коммерческое предложение, протоколы разногласий (если были).</li>
+                            <li><strong>Контакт Заказчика:</strong> кто будет куратором со стороны клиента (ФИО, роль, контакты).</li>
+                            <li><strong>Знакомство:</strong> если нужно обсудить, как осуществить знакомство куратора от заказчика с РУПом.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="accordion" style="margin-bottom: 12px;">
+                    <summary>6. Результат встречи</summary>
+                    <div style="padding: 12px 0;">
+                        <div class="text" style="margin-bottom: 8px;">По итогам встречи участники добавляют результат к задаче в системе с резюме встречи и одной из двух пометок:</div>
+                        <ul class="step-list" style="margin-bottom: 8px;">
+                            <li>«Ознакомлен. Вводная получена. Замечаний / рисков нет»</li>
+                            <li>или «Выявлены риски: … Требуется уточнение до подписания».</li>
+                        </ul>
+                        <div class="text" style="margin-bottom: 0;">Задача прикрепляется к сделке и служит подтверждением, что вводная по проекту состоялась. После этого можно переходить к <a href="#sub-10-2" class="ref-link">созданию производственного проекта (пункт 10.2)</a>.</div>
+                    </div>
+                </details>
+
+                <details class="accordion" style="margin-bottom: 12px;">
+                    <summary>7. Сроки проведения</summary>
+                    <div style="padding: 12px 0;">
+                        <div class="text" style="margin-bottom: 0;">Встреча проводится в течение 2 рабочих дней после того, как спецификация ушла на финальное согласование Заказчику, или на следующий день после подписания спецификации.</div>
+                    </div>
+                </details>
+
+                <details class="accordion" style="margin-bottom: 12px;">
+                    <summary>8. Ответственность</summary>
+                    <div style="padding: 12px 0;">
+                        <ul class="step-list" style="margin-bottom: 0;">
+                            <li>Если встреча не проведена — Специалист по продажам продолжает отвечать за сделку и, соответственно, за сроки поставки.</li>
+                            <li>Если специалист по продажам и РП не добавили результат в задачу по итогам встречи — передача считается несостоявшейся.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+		
+		
+		<hr style="border: none; border-top: 1px solid #000000; margin: 20px 0;"> <!-- Разделитель -->
+		
+
+        <!-- 10.2. Создание и запуск производственного проекта -->
+        <div class="subsection-title" id="sub-10-2">10.2. Создание и запуск производственного проекта (для Руководителя проектов)</div>
+        
+        <div class="text"><strong>Назначение регламента</strong></div>
+        <div class="text">Регламент описывает, как Руководитель проектов создаёт и настраивает производственный проект в Битрикс24. Применяется сразу после получения вводной от менеджера.</div>
+
+
+
+		<details class="accordion">
+				<summary>Участники и роли</summary>
+				<!-- Здесь ваш скрываемый контент -->
+			<table class="info-table">
+				<thead><tr><th>Роль</th><th>Функции в рамках регламента пункта 10.2</th></tr></thead>
+				<tbody>
+					<tr><td>Технический директор</td><td>Даёт поручение РУПу на создание проекта; назначает ответственных по задачам (РП, инспектор, конструктор, снабженец); управляет ресурсами.</td></tr>
+					<tr><td>Руководитель проектов (РП)</td><td>Создаёт проект из шаблона; наполняет задачами и вехами на основе ГПП и ПКИ; контролирует исполнение. Актуализирует контрольные точки ПКИ после получения заполненного графика изготовления от подрядчика (ГрИ).</td></tr>
+					<tr><td>Ведущий специалист отдела поставки</td><td>Определяет участников тендера, проводит торги, принимает активное участие в принятии решения по выбору схемы изготовления, разрабатывает ГПП (график подготовки производства) и отдаёт на согласование Руководителю проектов и Техническому директору.</td></tr>
+					<tr><td>Специалист отдела качества</td><td>Разрабатывает ПКИ (план контроля качества) и ГрИ, передаёт РУПу.</td></tr>
+				</tbody>
+			</table>
+		</details>
+        
+
+        <div class="text"><strong>Предварительные условия</strong></div>
+        <ul class="step-list">
+            <li>В сделке зафиксирован результат вводной встречи <a href="#sub-10-1" class="ref-link">(регламент пункт 10.1)</a> — задача с пометкой «Вводная получена».</li>
+            <li>Сделка переведена в воронке продаж на стадию «Производство» → автоматически создана карточка в смарт-процессе «Производство» и зафиксирована дата запуска заказа. Все поля раздела «О заказе» (клиент, дата поставки, куратор и пр.) копируются автоматически из связанной сделки.</li>
+            <li>Технический директор дал поручение РП на создание проекта (поменяв ответственного в автоматически созданной карточке проекта).</li>
+        </ul>
+
+
+
+		<details class="accordion">
+			<summary>Порядок действий</summary>
+			<!-- Здесь ваш скрываемый контент -->
+			<div class="subsection-title" id="sub-10-2-1" style="font-size:16px;">Создание проекта из шаблона</div>
+				<div class="text">РП создаёт проект сразу после получения вводной от менеджера.</div>
+				<div class="text"><strong>Порядок действий:</strong></div>
+				<ul class="step-list">
+					<li>Перейти в раздел «Проекты» Битрикс24.</li>
+					<li>Нажать «Создать проект» → «Из шаблона».</li>
+					<li>Выбрать шаблон <strong>«Проект № (ШАБЛОН 2)»</strong>.</li>
+					<li>В настройках указать:
+						<ul>
+							<li>Название: <code>[Номер спецификации/договора] [Наименование оборудования]</code></li>
+							<li>Тег «Заказчик» (название компании)</li>
+						</ul>
+					</li>
+					<li>Пример названия: <em>«26.27.01.00 Теплообменник поз.T-214»</em></li>
+					<li>Пример тега: <em>ООО «ФГ ДоГа»</em></li>
+				</ul>
+				 <div class="footer-note">Бывший раздел 10.2.1</div>
+		</details>
+        
+        
+
+        <div class="subsection-title" id="sub-10-2-2" style="font-size:16px;">10.2.2. Привязка проекта к CRM-карточке «Производство»</div>
+        <ul class="step-list" style="margin-left: 30px; line-height: 1.6;">
+            <li>В созданном проекте скопировать ссылку: левый верхний угол, значок ссылки рядом с крестиком закрытия.</li>
+            <li>Открыть CRM-доску «Производство», найти карточку заказа (создана автоматически при переводе сделки на стадию «Производство»).</li>
+            <li>Вставить скопированную ссылку в поле «Ссылка на проект» и сохранить карточку.</li>
+            <li>Перевести карточку с этапа <strong>НОВЫЙ ЗАКАЗ</strong> на <strong>Подготовка и планирование</strong>.</li>
+        </ul>
+
+        <div class="subsection-title" id="sub-10-2-3" style="font-size:16px;">10.2.3. Работа с вехами</div>
+        <ul class="step-list" style="margin-left: 30px; line-height: 1.6;">
+            <li>В проекте перейти на вкладку «Задачи», представление «Канбан».</li>
+            <li>Найти задачи с типом «Веха» (отмечены <span class="veha-romb">◆</span> красным ромбом).</li>
+        </ul>
+
+			
+			
+		<details class="accordion">
+			<summary>Типовой перечень вех:</summary>
+			<!-- Здесь ваш скрываемый контент -->
+				<div class="veha-grid" style="gap: 10px 32px; margin: 16px 0 16px 36px;">
+						<div class="veha-item"><span class="veha-romb">◆</span><span class="veha-text">Выиграли в тендере</span></div>
+						<div class="veha-item"><span class="veha-romb">◆</span><span class="veha-text">ВО/СБ согласован с заказчиком</span></div>
+						<div class="veha-item"><span class="veha-romb">◆</span><span class="veha-text">Спецификация согласована с Заказчиком</span></div>
+						<div class="veha-item"><span class="veha-romb">◆</span><span class="veha-text">РКД согласована с Заказчиком</span></div>
+						<div class="veha-item"><span class="veha-romb">◆</span><span class="veha-text">РКД передана изготовителю</span></div>
+						<div class="veha-item"><span class="veha-romb">◆</span><span class="veha-text">Договор с Изготовителем подписан</span></div>
+						<div class="veha-item"><span class="veha-romb">◆</span><span class="veha-text">Давальческие материалы переданы изготовителю</span></div>
+						<div class="veha-item"><span class="veha-romb">◆</span><span class="veha-text">Заказ запущен в производство</span></div>
+						<div class="veha-item"><span class="veha-romb">◆</span><span class="veha-text">Оборудование отгружено с завода-изготовителя</span></div>
+						<div class="veha-item"><span class="veha-romb">◆</span><span class="veha-text">Оборудование поставлено Заказчику</span></div>
+						<div class="veha-item"><span class="veha-romb">◆</span><span class="veha-text">Срок поставки по договору</span></div>
+				</div>
+		</details>
+
+
+
+
+        
+
+        <ul class="step-list" style="margin-left: 30px; line-height: 1.6;">
+            <li>РП актуализирует даты:
+                <ul style="list-style-type: circle; margin-left: 24px; margin-top: 6px;">
+                    <li style="margin-bottom: 12px;"><strong>«Выиграли в тендере»</strong> — дата фактической победы фиксируется в проекте РУПом, потому что этот этап важен с точки зрения создания буфера времени, здесь важно быстро работать пока спецификация согласовывается (основная веха продаж).</li>
+                    <li style="margin-bottom: 12px;"><strong>«Срок поставки по договору»</strong> — из поля «Дата поставки по договору» карточки сделки.</li>
+                    <li><strong>Остальные вехи</strong> заполняются ориентировочно, позже уточняются по ГПП и ГрИ.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="subsection-title" id="sub-10-2-4" style="font-size:16px;">10.2.4. Первичное наполнение задачами (до разработки ГПП)</div>
+        <div class="text" style="margin-bottom: 12px;">Сразу после создания проекта в нём уже присутствуют задачи этапа «Подготовка и планирование»:</div>
+        <ul class="step-list" style="margin-left: 30px; line-height: 1.6;">
+            <li>Сформировать тендерный лист (реестр потенциальных подрядчиков)</li>
+            <li>Провести тендер, выбрать подрядчика и согласовать схему изготовления</li>
+            <li>Разработать проект графика подготовки производства (ГПП)</li>
+        </ul>
+        <div class="text">Все остальные задачи, скопированные из шаблона, РП может удалить или оставить без изменений — они будут актуализированы после утверждения ГПП и ПКИ.</div>
+        <div class="note"><strong>Примечание:</strong> ГПП разрабатывается Ведущим специалистом отдела поставки. ПКИ разрабатывается Специалистом отдела качества после согласования РКД. Подробнее о работе с фото — <a href="#sub-10-3" class="ref-link">пункт 10.3</a>.</div>
+
+        <div class="subsection-title" id="sub-10-2-5" style="font-size:16px;">10.2.5. Наполнение задачами на основе ГПП, а затем и ПКИ (после их готовности)</div>
+        <div class="text">После утверждения ГПП, РП актуализирует проект одним из следующих способов (в зависимости от сложности проекта):</div>
+        <ol class="step-list" style="list-style-type: decimal;">
+            <li><strong>Ручное перенесение</strong> — создание задач, используя шаблоны или создавая новые задачи в соответствующих колонках канбана на основе данных ГПП (если проект уникальный).</li>
+            <li><strong>Корректировка скопированного</strong> — удаление лишних задач и добавление недостающих (если проект типичный).</li>
+            <li><strong>Использование нейросети Битрикс24</strong> — постановка задачи CoPilot на создание структуры по колонкам (если проект уникальный).</li>
+        </ol>
+        <div class="text">После разработки и утверждения ПКИ задачи ПКИ (помеченные тегами <code>#задача_пки</code>) остаются у РУПа без сроков до получения от изготовителя Графика изготовления (ГрИ). После получения ГрИ специалист по качеству сам проставляет контрольные даты (все изменения задач фиксируются в чате задачи, не рекомендуется делать лишних манипуляций с задачами, чтобы легко можно было восстановить порядок работы специалистов).</div>
+        <div class="principle">Важно: Завершённые задачи остаются в своих колонках. Отдельный архив завершённых задач не предусмотрен — это позволяет легко находить историю выполнения (каждая задача, активная и завершённая, на своём этапе).</div>
+
+		             <div class="subsection-title" id="sub-10-2-6" style="font-size:16px;">10.2.6. Назначение ответственных</div>
+        <div class="text" style="margin-bottom: 8px;">
+            Ответственных по задачам и вехам назначает <span style="font-weight: 600;">Технический директор</span>.
+            Руководитель проекта может заранее предложить распределение, но окончательное решение остаётся за Техдиректором.
+        </div>
+		
+		
+		<details class="accordion">
+    <summary>Роли и зоны ответственности:</summary>
+    <!-- Здесь скрываемый контент -->
+    <ul style="margin: 0 0 12px 0; padding-left: 20px; list-style-type: disc;">
+            <li style="margin-bottom: 6px;"><span style="font-weight: 600; color: #1e2b3c;">Руководитель проекта (РП)</span> — вехи, общие родительские задачи, контроль сроков и координация.</li>
+            <li style="margin-bottom: 6px;"><span style="font-weight: 600; color: #1e2b3c;">Инспектор</span> — задачи плана контроля качества (ПКИ), загрузка фото и описание наблюдений.</li>
+            <li style="margin-bottom: 6px;"><span style="font-weight: 600; color: #1e2b3c;">Конструктор</span> — разработка и согласование ВО, ВМ, РКД.</li>
+            <li style="margin-bottom: 6px;"><span style="font-weight: 600; color: #1e2b3c;">Ведущий специалист по поставке</span> — взаимодействие с изготовителем до выбора победителя тендера, подготовка ГПП.</li>
+        </ul> 
+</details>  
+
+        <div class="subsection-title" id="sub-10-2-7" style="font-size:16px;">10.2.7. Подготовка структуры альбомов во вкладке «Фото»</div>
+        <ul class="step-list">
+            <li>РП (или по его поручению инспектор) проверяет, что во вкладке «Фото» созданы разделы альбомов, соответствующие контрольным точкам ПКИ.</li>
+            <li>При необходимости переименовывает или добавляет разделы (например, «Трубчатка», «Корпус», «Камера распределительная»).</li>
+            <li>Сами альбомы внутри разделов создаёт инспектор при получении фото от изготовителя, называя их по названию задачи ПКИ (см. раздел 10.3).</li>
+        </ul>
+
+        <div class="subsection-title" id="sub-10-2-8" style="font-size:16px;">10.2.8. Запуск проекта в работу</div>
+        <ul class="step-list">
+            <li>РП проверяет выполнение всех пунктов по чек-листу (раздел 10.2.9).</li>
+            <li>Уведомление команды о старте проекта происходит автоматически при переводе сделки на стадию «Производство». При необходимости РП дополнительно информирует участников в рабочем чате.</li>
+        </ul>
+
+
+		<div class="subsection-title" id="sub-10-2-9" style="font-size:16px;">10.2.9. Инструкция перед запуском проекта</div>
+		<details class="accordion">
+				<summary>Чек-лист РП перед запуском проекта</summary>
+				<!-- Здесь ваш скрываемый контент -->
+				<table class="info-table">
+				<thead><tr><th>№</th><th>Действие</th><th>Подтверждение</th></tr></thead>
+				<tbody>
+					<tr><td>1</td><td>Проект создан из шаблона «Проект № (ШАБЛОН 2)», название соответствует правилам</td><td>✅</td></tr>
+					<tr><td>2</td><td>Поля вкладки «О заказе» проверены (клиент, дата поставки, куратор)</td><td>✅</td></tr>
+					<tr><td>3</td><td>Ссылка на проект вставлена в поле «Ссылка на проект» карточки CRM «Производство»</td><td>✅</td></tr>
+					<tr><td>4</td><td>Вехи актуализированы: проставлены даты «Выиграли в тендере», «Срок поставки по договору»</td><td>✅</td></tr>
+					<tr><td>5</td><td>Задачи на разработку ГПП присутствуют; лишние задачи удалены/отложены до утверждения ГПП</td><td>✅</td></tr>
+					<tr><td>6</td><td>Ответственные назначены Техническим директором по ключевым задачам и вехам</td><td>✅</td></tr>
+					<tr><td>7</td><td>Структура разделов альбомов во вкладке «Фото» проверена и соответствует будущим точкам ПКИ, впоследствии может быть актуализирована</td><td>✅</td></tr>
+					<tr><td>8</td><td>Команда проинформирована о старте проекта (помимо автоматического уведомления)</td><td>✅</td></tr>
+				</tbody>
+			</table>
+		</details>       
+
+        <div class="text"><strong>Ответственность в рамках пункта 10.2 </strong></div>
+        <ul class="step-list">
+            <li><strong>Руководитель проектов</strong> — за своевременное и корректное создание проекта, актуализацию вех и наполнение задачами в соответствии с ГПП.</li>
+            <li><strong>Технический директор</strong> — за назначение ответственных и контроль ресурсной обеспеченности.</li>
+            <li><strong>Ведущий специалист по поставке</strong> — за своевременную подготовку тендерного листа и разработку ГПП.</li>
+            <li><strong>Специалист отдела качества</strong> — за разработку ПКИ и актуализацию сроков контрольных точек после получения ГрИ.</li>
+        </ul>
+
+
+		<hr style="border: none; border-top: 1px solid #000000; margin: 20px 0;"> <!-- Разделитель -->	
+
+
+        <!-- 10.3. Работа с фото в проекте -->
+        <div class="subsection-title" id="sub-10-3">10.3. Работа с фото в проекте (для специалиста отдела качества)</div>
+        
+        <div class="principle">Общий принцип: Все фотографии от изготовителя загружаются в проект сразу после получения, до начала проверки. Фото служат исходным материалом для контроля. В описании к фото фиксируются наблюдения инспектора. Результат проверки фиксируется в задаче, в поле Результат.</div>
+
+        <div class="text"><strong>1. Когда и где загружать</strong></div>
+        <ul class="step-list">
+            <li>Загрузить сразу после получения фотографий.</li>
+            <li>Загрузка производится во вкладку <strong>«Фото»</strong> внутри проекта.</li>
+            <li>Разделы альбомов (например, «Трубчатка», «Камера распределительная») уже созданы при копировании шаблона проекта и отредактированы руководителем проекта после разработки ПКИ.</li>
+        </ul>
+
+        <div class="text"><strong>2. Как создавать альбомы</strong></div>
+        <ul class="step-list">
+            <li>Внутри нужного раздела инспектор создаёт новый альбом.</li>
+            <li>Название альбома должно <strong>совпадать с названием задачи на контроль</strong> (чтобы легко было найти связь между альбомом и задачей). Копируем название задачи и вставляем в название альбома.</li>
+            <li>Дата и время создания альбома фиксируются системой автоматически — это отметка о дне получения фото.</li>
+        </ul>
+
+        <div class="text"><strong>3. Загрузка фотографий</strong></div>
+        <ul class="step-list">
+            <li>В созданный альбом загружаются все полученные от изготовителя фотографии.</li>
+            <li>Каждое фото загружается отдельно.</li>
+        </ul>
+
+        <div class="text"><strong>4. Комментирование фотографий</strong></div>
+        <div class="text">По клику по фотографии можно открыть её и сразу зафиксировать в описании комментарий. Инспектор не выносит окончательное решение в описание к фото. Он только фиксирует визуальные наблюдения:</div>
+        <table class="info-table">
+            <thead><tr><th>Что видит</th><th>Как комментирует</th></tr></thead>
+            <tbody>
+                <tr><td>Норма</td><td>«Размер соответствует чертежу», «Шов ровный, пор нет»</td></tr>
+                <tr><td>Отклонение / брак</td><td>«Смещение кромки ~2 мм», «Пора на сварном шве», «Диаметр меньше требуемого»</td></tr>
+            </tbody>
+        </table>
+        <div class="text">Комментарий пишется под конкретной фотографией.</div>
+
+        <div class="text"><strong>5. Результат проверки фиксируем в задаче</strong></div>
+        <ul class="step-list">
+            <li>В результате задачи обязательно зафиксировать, что «Фотографии подгружены, контроль проведён».</li>
+            <li>Описание итогового решения («годен», «брак», «отправить на доработку» с обоснованием при необходимости).</li>
+        </ul>
+
+
+
+				<details class="accordion">
+					<summary>6. Контрольные точки (памятка инспектора)</summary>
+					<!-- Здесь ваш скрываемый контент -->
+					 <div class="text"><strong></strong></div>
+						<ul class="step-list">
+							<li>✅ Получил фото от изготовителя</li>
+							<li>✅ Перешёл в проект → вкладка «Фото» → нужный раздел альбомов</li>
+							<li>✅ Создал альбом с названием задачи на контроль</li>
+							<li>✅ Загрузил все фото в альбом</li>
+							<li>✅ Под каждым фото написал комментарий (норма / брак / что вижу)</li>
+							<li>✅ В карточке задачи (результат) зафиксировал, что фото подгружены с описанием</li>
+							<li>✅ В карточке задачи (результат) зафиксировал итоговое решение</li>
+						</ul>
+				</details>
+
+
+
+       
+
+        <div class="text"><strong>7. Зачем это нужно</strong></div>
+        <ul class="step-list">
+            <li><strong>Прозрачность</strong> — любой участник проекта видит исходные фото, комментарии инспектора и итоговое решение (работа проведена, увидел и зафиксировал. В результате все застрахованы).</li>
+            <li><strong>Дата фиксируется</strong> — система показывает, когда были получены фото (дата создания альбома).</li>
+            <li><strong>Связь с задачей</strong> — альбом назван по задаче, легко найти.</li>
+            <li><strong>Решение отдельно от комментариев</strong> — исключена путаница между наблюдением и окончательным вердиктом.</li>
+        </ul>
+
+        <div class="text"><strong>8. Контрольные операции (статусы)</strong></div>
+        <div class="text">Контрольным операциям (далее — контрольные точки) присваивается статус «HP», «WP» или «WP(R)»:</div>
+		
+			<details class="accordion">
+			<summary>Статусы контрольных точек</summary>
+			<!-- Здесь скрываемый контент -->
+				<ul class="step-list">
+					<li><strong>«HP»</strong> — «точка задержки». Контроль осуществляется путём наблюдения или непосредственного участия в контрольной операции с условием, что на время контрольной операции технологический процесс должен быть остановлен и его продолжение возможно только после получения удовлетворительного результата по этой контрольной операции.</li>
+					<li><strong>«WP»</strong> — «точка освидетельствования». Означает, что к моменту проведения рассматриваемой контрольной операции инспектор должен быть уведомлён о её начале и готовности производства к инспекции. Контроль осуществляется путём наблюдения за ходом технологической операции без останова производственного процесса.</li>
+					<li><strong>«WP(R)»</strong> — «точка освидетельствования» по документам. Контроль осуществляется путём проверки отчётной документации по результатам проведения соответствующих операций.</li>
+				</ul>
+			</details>
+				
+		
+
+		
+		<hr style="border: none; border-top: 1px solid #000000; margin: 20px 0;"> <!-- Разделитель -->
+		
+		                <!-- 10.4. Управление рисками проекта -->
+                <div class="subsection-title" id="sub-10-4">10.4. Управление рисками проекта <span style="font-size: 14px; color: #f0ad4e;">(на согласовании)</span></div>
+                <div class="work-in-progress">
+                    Полный регламент управления рисками находится в разработке. Ниже приведён алгоритм действий управления рисками.
+                </div>
+
+
+
+
+					<details class="accordion">
+						<summary>Алгоритм управления риском (шесть шагов, выполняются последовательно для каждого выявленного риска)</summary>
+						<!-- Здесь скрываемый контент -->
+						<ol class="step-list" style="list-style-type: decimal; margin-left: 24px;">
+                    <li><strong>Выявление</strong> — зафиксировать риск, дать ему краткое описание (условие, последствие, первопричина, убыток).</li>
+                    <li><strong>Приоритизация</strong> — присвоить риску уровень (низкий / средний / высокий).</li>
+                    <li><strong>Интеграция в план</strong> — определить стратегию реагирования (избегания, смягчение, перенос, реагирование, принятие) и при необходимости создать связанную задачу в проекте.</li>
+                    <li><strong>Мониторинг</strong> — отслеживать риск на контрольных точках и вехах, актуализировать статус.</li>
+                    <li><strong>Корректирование</strong> — при изменении ситуации или реализации риска скорректировать план действий и уведомить ответственных.</li>
+                    <li><strong>Рефлексия</strong> — после закрытия проекта зафиксировать выводы и, если применимо, обновить реестр типовых рисков компании.</li>
+                </ol>
+					</details>
+				
+				
+				
+				
+				
+
+<!-- ==================== ПРИЛОЖЕНИЕ 3. РЕЕСТР РИСКОВ ПРОЕКТА ==================== -->
+<div class="section" id="appendix-risk-register">
+
+    
+    <div class="text" style="margin-bottom:20px;">
+        Этот инструмент помогает пройти все шесть шагов управления рисками в производственном проекте.
+        Используйте таблицу ниже для выявления, оценки, планирования и отслеживания каждого риска.
+    </div>
+
+    <!-- Пошаговая инструкция (сворачиваемая) -->
+    <details class="accordion" style="margin-bottom:20px;">
+        <summary>Как работать с реестром: пошаговый алгоритм</summary>
+        <div style="padding:0 16px 16px 16px;">
+            <div class="subsection-title" style="font-size:16px;">1. Выявление и описание риска</div>
+            <div class="text">Заполните столбцы: Область, Источник, Первопричина, Условие, Последствие, Убыток. Используйте чек-листы, мозговые штурмы, анализ документации.</div>
+            
+            <div class="subsection-title" style="font-size:16px;">2. Приоритизация</div>
+            <div class="text">Выберите <strong>вероятность</strong> и <strong>убыток</strong> из выпадающих списков. Серьёзность рассчитается автоматически по шкале 1–9, и ячейка окрасится в зелёный (низкая), жёлтый (средняя) или красный (большая).</div>
+            
+            <div class="subsection-title" style="font-size:16px;">3. Интеграция в план</div>
+            <div class="text">Выберите стратегию (избегание, смягчение, перенос, реагирование, принятие) и запишите конкретный план действий. При необходимости создайте задачу в проекте (см. <a href="#sub-10-2" class="ref-link">10.2</a>).</div>
+            
+            <div class="subsection-title" style="font-size:16px;">4. Мониторинг</div>
+            <div class="text">На контрольных точках и вехах обновляйте статус мониторинга (например: «на контроле», «реализовался», «миновал»).</div>
+            
+            <div class="subsection-title" style="font-size:16px;">5. Корректирование</div>
+            <div class="text">Если ситуация изменилась или риск реализовался, опишите корректирующие действия и обновите план.</div>
+            
+            <div class="subsection-title" style="font-size:16px;">6. Ретроспектива</div>
+            <div class="text">После закрытия проекта запишите выводы: что сработало, что можно улучшить, стоит ли добавить риск в реестр рисков компании.</div>
+        </div>
+    </details>
+	
+	<!-- Кнопка скачивания инструмента управления рисками -->
+                <!-- Кнопки для скачивания инструментов -->
+                <div style="display: flex; gap: 16px; margin-top: 24px; justify-content: center; flex-wrap: wrap;">
+                    <!-- Приложение -->
+                    <span style="display: inline-block; padding: 12px 24px; background: #d9534f; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; font-family: inherit; text-align: center; opacity: 0.7;">
+    📥 Приложение для управления рисками (внутренний ресурс)
+</span>
+                    
+                    <!-- Шаблон Excel -->
+                    <span style="display: inline-block; padding: 12px 24px; background: #d9534f; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; font-family: inherit; text-align: center; opacity: 0.7;">
+    📥 Шаблон управления рисками (Excel, внутренний ресурс)
+</span>
+                </div>
+
+    <div class="note">
+        <strong>Рекомендуется:</strong> Опирайтесь на типовые риски из раздела <a href="#appendix-matrix" class="ref-link">Приложение 2 (Проблемы и решения)</a> и вводную по проекту (<a href="#sub-10-1" class="ref-link">10.1</a>).
+        Все планы реагирования должны быть привязаны к задачам в производственном проекте.
+    </div>
+	<div class="note" style="margin-top: 16px;">
+                    <strong>Важно:</strong>  После утвержения раздела регламента реестр рисков проекта будет интегрирован в Элемент CRM производственного проекта для отработки.
+                </div>
+
+    <div class="footer-note">Инструмент разработан для освоения алгоритма управления рисками. Версия 2.0 (май 2026)</div>
+</div>
+			</div>
+		</div>
+			
+			
+			
+            <!-- ==================== РАЗДЕЛ 11 ==================== -->
+            <div class="section" id="section11">
+                <div class="pulse-card-gray" style="background: #ffffff; border-radius: 16px; padding: 24px 28px; margin: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid #eef2f4; transition: box-shadow 0.3s, border-color 0.3s;">
+                    
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 6px; border-bottom: 2px solid #d9534f;">
+                        <span style="font-size: 20px; font-weight: 700; color: #d9534f;">11. Снабжение</span>
+                        <span class="toc-status approved" style="font-size: 13px;">утвержден</span>
+                    </div>
+
+                    <div class="subsection-title" id="sub-11-1">11.1. Регламент заполнения карточки поставщика в CRM</div>
+
+                    <!-- Пункт 1 -->
+                    <div class="subsection-title" id="sub-11-1-1" style="font-size:16px; margin-top:20px;">1. Когда заполняем карточку поставщика</div>
+                    <div class="text">Карточку заводим в трёх случаях:</div>
+                    <ul class="step-list">
+                        <li><strong>Новый поставщик</strong> — прислал предложение, нашли на рынке, порекомендовали коллеги. Создаём карточку сразу, не откладываем.</li>
+                        <li><strong>Планируем закупку</strong> у поставщика, которого ещё нет в CRM. Даже если кажется разовой — карточка останется в базе и сэкономит время в будущем.</li>
+                        <li><strong>Обновилась информация</strong> по действующему поставщику. Изменились контакты, условия, появились новые документы — сразу вносим изменения в существующую карточку.</li>
+                    </ul>
+                    <div class="text"><strong>Не заполняем карточку, если:</strong></div>
+                    <ul class="step-list">
+                        <li>Поставщик уже есть в CRM (проверяем поиском перед созданием).</li>
+                        <li>Предложение не относится к нашей деятельности.</li>
+                    </ul>
+
+                    <!-- Пункт 2 -->
+                    <div class="subsection-title" id="sub-11-1-2" style="font-size:16px; margin-top:20px;">2. Зачем мы ведём реестр поставщиков в CRM</div>
+                    <div class="text">Реестр поставщиков — это общий источник проверенной информации. Он нужен, чтобы:</div>
+                    <ul class="step-list">
+                        <li><strong>Искать по группам и параметрам.</strong> Поиск по продукции, городу, контактам и другим параметрам работает быстрее, чем почта, таблицы и записные книжки.</li>
+                        <li><strong>Имет доступ к общему ресурсу.</strong> Если снабженец заболел или уволился, его наработки остаются в CRM, а не в личной таблице или записной книжке.</li>
+                        <li><strong>Видеть актуальные контакты.</strong> Телефоны и почту проще актуализировать в одном месте. Это экономит время и убирает необходимость доставать информацию у ушедшего сотрудника.</li>
+                        <li><strong>Видеть историю работы с поставщиком.</strong> Скидки, минимальная партия, условия доставки и многое другое — всё видно заранее, до начала переговоров.</li>
+                    </ul>
+
+                    <!-- Пункт 3 -->
+                    <div class="subsection-title" id="sub-11-1-3" style="font-size:16px; margin-top:20px;">3. Как заполнять карточку поставщика: общие правила</div>
+                    <ul class="step-list">
+                        <li>Заполняем обязательные поля (отмечены звёздочкой). Остальные — по мере появления информации.</li>
+                        <li>Двигаемся от общего к частному: сначала раздел «О компании», затем «Что закупаем», потом «Условия закупки», «Документация», «Договоры», «Дополнительно».</li>
+                        <li>Данные вносим без искажений, строго как в документах поставщика или переписке.</li>
+                        <li>Обновляем карточку сразу, как получили новые сведения. Не откладываем.</li>
+                    </ul>
+
+                    <!-- Пункт 4 -->
+                    <div class="subsection-title" id="sub-11-1-4" style="font-size:16px; margin-top:20px;">4. Единообразие данных</div>
+                    <div class="text">Все поля заполняем так, чтобы другой снабженец мог понять карточку без дополнительных вопросов. Для этого придерживаемся следующих правил и примеров.</div>
+					
+										<details class="accordion">
+						<summary>Примеры заполнения разделов карточки поставщика</summary>
+
+						<!-- Раздел «О компании» -->
+						<div style="background:#f8fafc; border-radius:8px; padding:16px; margin:16px 0 0 0;">
+							<strong>Раздел «О компании»</strong>
+							<div style="margin-top:6px;"><strong>Название компании:</strong> ООО «Поставщик»</div>
+							<div style="margin-top:6px;"><strong>Категория поставщика:</strong> Специальные стали и сплавы, поковки, комплектующие для химического и энергетического оборудования.</div>
+							<div style="margin-top:6px;"><strong>ИНН / КПП:</strong> 0000000000 / 0000000000</div>
+							<div style="margin-top:6px;"><strong>Город:</strong> г. Екатеринбург, ул. Примерная, д. 1</div>
+							<div style="margin-top:6px;"><strong>Контакты:</strong> тел. +7 (343) 000-00-00, эл. почта: info@supplier.ru</div>
+							<div style="margin-top:6px;"><strong>Сайт:</strong> supplier.ru</div>
+						</div>
+
+						<!-- Раздел «Что закупаем» -->
+						<div style="background:#f8fafc; border-radius:8px; padding:16px; margin:16px 0;">
+							<strong>Раздел «Что закупаем»</strong>
+							<div style="margin-top:6px;"><strong>Поставляемая продукция (детали | снабжение):</strong></div>
+							<div style="background:#ffffff; border-radius:6px; padding:8px; margin-top:6px;">
+								Элементы сосудов, работающих под давлением<br>
+								Детали трубопроводов<br>
+								Поковки и детали из специальных сталей<br>
+								Листовой металлопрокат (в т.ч. двухслойный)<br>
+								Трубы бесшовные<br>
+								Днища и решётки
+							</div>
+							<div style="margin-top:6px;"><strong>Специализация по ключевым материалам:</strong> Коррозионностойкие стали (12Х18Н10Т, 10Х17Н13М2Т, 06ХН28МДТ), никелевые сплавы (INCONEL 625, HASTELLOY C-276, MONEL 400), титановые сплавы (Grade 2), дуплексные стали (Duplex 2205).</div>
+						</div>
+
+						<!-- Раздел «Условия закупки» -->
+						<div style="background:#f8fafc; border-radius:8px; padding:16px; margin:16px 0;">
+							<strong>Раздел «Условия закупки»</strong>
+							<div style="margin-top:6px;"><strong>Условия доставки:</strong> Доставка до склада покупателя, транспортные расходы включены в стоимость при заказе от 500 000 руб. При меньших суммах — доставка ТК за счёт покупателя.</div>
+							<div style="margin-top:6px;"><strong>Минимальная партия:</strong> Зависит от номенклатуры. Для стандартного листового проката — от 1 листа (например, 2×1500×6000 мм). Для поковок нестандартных размеров — от 1 шт.</div>
+							<div style="margin-top:6px;"><strong>Предоплата:</strong> 30% предоплата, 70% по факту готовности к отгрузке. Для новых клиентов возможно до 100% предоплаты первой партии.</div>
+							<div style="margin-top:6px;"><strong>Скидки и особые условия:</strong> Скидка 5% при заказе от 1 млн. руб. Скидка 10% при годовом контракте объёмом свыше 10 млн. руб. Отсрочка платежа до 30 дней для постоянных клиентов.</div>
+						</div>
+
+						<!-- Раздел «Документация» -->
+						<div style="background:#f8fafc; border-radius:8px; padding:16px; margin:16px 0;">
+							<strong>Раздел «Документация»</strong>
+							<div style="margin-top:6px;"><strong>Наличие документов и сертификатов:</strong> ☑️ Сертификат соответствия ТР ТС (на продукцию), ☑️ Паспорт (сертификат) качества завода-изготовителя, ☑️ Протоколы механических испытаний, ☑️ Протоколы испытаний на стойкость к МКК (ASTM A262 Practices C / E), ☑️ Протоколы УЗК (ГОСТ 24507-80).</div>
+							<div style="margin-top:6px;"><strong>Файлы (сертификаты, лицензии, протоколы):</strong>
+								<div style="background:#ffffff; border-radius:4px; padding:6px; margin-top:4px; font-size:12px;">
+									<em>..._Поставщик.pdf</em><br>
+									<em>Паспорт_качества_партия_254_12.03.2025.pdf</em><br>
+									<em>Протокол_МКК_INCONEL_625_пластина_5мм_22.12.2024.pdf</em><br>
+									<em>УЗК_поковка_днище_D1200_S10_10.03.2025.pdf</em>
+								</div>
+							</div>
+						</div>
+
+						<div class="appendix-hint" style="margin-top: 0;">
+							<span>💡</span><span> Используйте этот образец для заполнения карточек новых поставщиков.</span>
+						</div>
+					</details>
+                                      
+                        
+                    <!-- Пункт 5 -->
+                    <div class="subsection-title" id="sub-11-1-5" style="font-size:16px; margin-top:20px;">5. Актуальность данных</div>
+                    <div class="text">Вся информация в карточке должна быть достоверной на текущий момент. Если узнали что контактное лицо уволилось — снимаем галочку «Актуален» в карточке контакта. Пометка «Уволен» в поле контакта означает, что по этому номеру и почте больше не связываемся. Если изменились условия поставки или реквизиты — сразу вносим изменения. Архивные документы не удаляем, они остаются в истории CRM. </div>
+
+                    <!-- Пункт 6 -->
+                    <div class="subsection-title" id="sub-11-1-6" style="font-size:16px; margin-top:20px;">6. Ответственный и доступ к карточке</div>
+                    <div class="text">У каждой карточки есть ответственный — это системное требование Битрикс24. Карточка не является личной: любой сотрудник отдела снабжения может просматривать, дополнять и обновлять информацию. История правок компании (в полях левой части карточки) не фиксируется. Можно в правой части фиксировать комментариями.</div>
+
+                    <!-- Пункт 7 -->
+                    <div class="subsection-title" id="sub-11-1-7" style="font-size:16px; margin-top:20px;">7. Работа с дубликатами</div>
+                    <div class="text">Перед созданием новой карточки проверяем через поиск, нет ли в CRM поставщика с таким же названием или ИНН. Если нашли существующую карточку — дополняем её, новую не создаём. При обнаружении двух карточек одного поставщика сообщаем руководителю или администратору CRM для объединения данных.</div>
+
+                    <div class="footer-note">Раздел на согласовании 04.05.2026</div>
+                </div>
+            </div>
+	
+            <!-- ==================== РАЗДЕЛ 12 ==================== -->
+            <div class="section" id="section12">
+			<div class="pulse-card-gray" style="background: #ffffff; border-radius: 16px; padding: 24px 28px; margin: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid #eef2f4; transition: box-shadow 0.3s, border-color 0.3s;">
+                <div class="section-title">12. Письма и правила деловой переписки <span class="toc-status approved" style="font-size: 13px;">утвержден</span></div>
+                <div class="subsection-title" id="sub-12-1">12.1. Общие правила</div>
+                <div class="text">Бланк обязателен для всех исходящих писем внешним контрагентам.</div>
+                <div class="reference"><strong>Ссылка на бланк:</strong> Скачать бланк (внутренний ресурс)</div>
+                <div class="subsection-title" id="sub-12-2">12.2. Порядок заполнения полей бланка</div>
+                <table class="info-table">
+                    <thead><tr><th>Поле</th><th>Как заполнять</th></tr></thead>
+                    <tbody>
+                        <tr><td>Кому</td><td>Должность + ФИО</td></tr>
+                        <tr><td>Копия</td><td>При необходимости</td></tr>
+                        <tr><td>Тема</td><td>Кратко, по существу</td></tr>
+                        <tr><td>Автор</td><td>ФИО сотрудника</td></tr>
+                        <tr><td>Должность, телефон, e-mail</td><td>Полностью</td></tr>
+                        <tr><td>Исх. №</td><td>По порядку из общей папки (см. 12.3)</td></tr>
+                        <tr><td>Дата</td><td>Дата отправки</td></tr>
+                    </tbody>
+                </table>
+                
+				
+				                <!-- БЫВШИЙ РАЗДЕЛ 12.3 (нумерация сохранена для сквозной структуры) -->
+                <details class="accordion" id="sub-12-3" style="margin-bottom: 16px;">
+                    <summary>Присваиваем номер письма «Исх. №» (чек-лист)</summary>
+                    <div style="padding: 12px 0 0 0;">
+                        <ol class="step-list" style="list-style-type: decimal;">
+                            <li>Зайти на сервер в общую папку с письмами текущего года.</li>
+                            <li>Посмотреть последний использованный номер.</li>
+                            <li>Назначить следующий по порядку номер.</li>
+                            <li>Сохранить письмо с этим номером в папку.</li>
+                            <li>При необходимости согласовать с руководителем.</li>
+                            <li>Отправить письмо внешней стороне.</li>
+                        </ol>
+                        <div class="text" style="margin-top: 8px;">В начале года создаётся новая папка, нумерация начинается с № 1.</div>
+						 <div class="footer-note">Бывший раздел 12.3 (нумерация сохранена для сквозной структуры)</div>
+                    </div>
+                </details>
+				
+				
+                
+				<div class="subsection-title" id="sub-12-4">12.4. Хранение</div>
+                <div class="text">Все письма на сервере компании. Формат: <code>№__дата__тема (контрагент).docx</code>. Пример: <code>№12_14.04.2026_КП Иванову (Сибур-Нефтехим).docx</code>.</div>
+                
+				<div class="subsection-title" id="sub-12-5">12.5. Контроль</div>
+                <div class="text">Сотрудник отвечает за оформление. Руководитель может проверить.</div>
+                
+				<div class="subsection-title" id="sub-12-6">12.6. Краткие правила деловой переписки</div>
+                <div class="text">Вся деловая переписка строится на уважении к адресату и заботе о его времени. Следуйте этим правилам, чтобы ваши письма были эффективными и удобными для чтения.</div>
+                
+				
+				
+				<details class="accordion">
+					<summary>Правила деловой переписки</summary>
+					<!-- Здесь ваш скрываемый контент -->
+				<div class="text"><strong>1. Уважайте время. Пишите коротко и по существу.</strong><br>
+						Одна мысль — один абзац. Главную мысль ставьте в начало. Если письмо длинное, в первом абзаце кратко объясните, о чем речь и что нужно от адресата.</div>
+
+						<div class="text"><strong>2. Избегайте пустых и канцелярских фраз.</strong><br>
+						Слова и предложения должны нести смысл. Чем проще язык, тем быстрее вас поймут.</div>
+
+						<div class="text"><strong>3. Структурируйте длинные письма.</strong><br>
+						Используйте списки и подзаголовки — так текст легче читать и воспринимать. Разбивайте сложные темы на логические блоки.</div>
+
+						<div class="text"><strong>4. Проверяйте имена и факты.</strong><br>
+						Ошибка в имени получателя недопустима и сразу подрывает доверие. Обращайтесь к человеку так, как он представился.</div>
+
+						<div class="text"><strong>5. Избегайте скрытого давления.</strong><br>
+						Прямой и честный разговор вызывает больше доверия, чем манипулятивные приёмы. Открыто говорите, что вам нужно и почему это важно сейчас. Честная просьба уважает время другого человека.</div>
+
+						<div class="text"><strong>6. Один вопрос — одно письмо.</strong><br>
+						Не смешивайте в одном письме несколько тем. Это позволяет адресату быстро сориентироваться и ответить по существу. Если вопросов несколько — разнесите их по разным письмам с понятными темами.</div>
+
+						<div class="text"><strong>7. Будьте дружелюбны и профессиональны.</strong><br>
+						Избегайте панибратства, но и не впадайте в излишнюю официозность. Уважение показывайте делом: чётко отвечайте на вопросы, прикладывайте нужные файлы, соблюдайте обещания и сроки.</div>
+
+						<div class="text"><strong>8. Проверьте текст на простоту.</strong><br>
+						Перед отправкой перечитайте письмо. Спросите себя: «Поймет ли адресат с первого раза, что от него требуется?». Помочь могут нейросети, но главный фильтр — ваше собственное чувство ясности.</div>
+						
+						<div class="note">В любой работе и в любой цепочке процессов тот, кто получает результат твоего труда, — твой потребитель. Уважай его время и интересы, говори по делу и передавай информацию в готовом для использования виде.</div>
+				</details>
+				               
+			   <div class="subsection-title" id="sub-12-7">12.7. Чек-лист перед отправкой</div>
+                <ul class="step-list">
+                    <li>Адресат и копия корректны?</li>
+                    <li>Тема отражает суть?</li>
+                    <li>Исх. № совпадает с именем файла?</li>
+                    <li>Содержание структурировано?</li>
+                    <li>Вложения прикреплены?</li>
+                    <li>Контакты автора указаны?</li>
+                    <li>Дата соответствует?</li>
+                    <li>Файл сохранён в папку?</li>
+                </ul>
+                <div class="subsection-title" id="sub-12-8">12.8. Единый стандарт подписи в электронных письмах (подпись в конце электронного письма)</div>
+				<div class="text">Главный принцип деловой переписки: уважение к адресату и забота о его интересах. В подписи это проявляется в том, чтобы адресат сразу понял, кто ему написал, и как связаться. Всё, что не помогает решить эту задачу, — лишнее.</div>	
+                <span class="struct-status approved">подпись утверждёна</span>
+				
+				<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 30px 0 20px 0;">
+    
+					<!-- «Компания» -->
+					<div style="position: relative; background: #f8fafc; border-radius: 12px; padding: 28px 20px 18px 20px; border: 1px solid #e6ecf0; margin-top: 12px;">
+						<div style="position: absolute; top: -14px; left: 20px; background: white; padding: 2px 14px; border-radius: 20px; font-weight: 700; color: #d9534f; font-size: 15px; border: 1px solid #d9534f; white-space: nowrap;">
+						</div>
+						С уважением,<br>
+						Фамилия Имя Отчество<br>
+						Должность<br><br>
+						Связаться: +7 (111) 111-11-11<br>
+						Сайт: company.ru<br><br>
+						<em style="color: #4a5a6e;">Проектируем и поставляем теплообменное оборудование под ключ</em>
+					</div>
+
+					<!-- Поставщик -->
+					<div style="position: relative; background: #f8fafc; border-radius: 12px; padding: 28px 20px 18px 20px; border: 1px solid #e6ecf0; margin-top: 12px;">
+						<div style="position: absolute; top: -14px; left: 20px; background: white; padding: 2px 14px; border-radius: 20px; font-weight: 700; color: #d9534f; font-size: 15px; border: 1px solid #d9534f; white-space: nowrap;">
+							ООО «Поставщик»
+						</div>
+						С уважением,<br>
+						Фамилия Имя Отчество<br>
+						Должность<br><br>
+						Связаться: +7 (111) 111-11-11<br>
+						Сайт: supplier.ru<br><br>
+						<em style="color: #4a5a6e;">Поставляем специальные стали и сплавы от производителей</em>
+					</div>
+
+				</div>				
+
+                <div class="text"><strong>Что даёт единый стандарт:</strong> клиент видит актуальные контакты; профессиональный образ без лишнего; единый слоган.</div>
+
+                <!-- 12.9 ОТПРАВКА -->
+                <div class="subsection-title" id="sub-12-9">12.9. Отправка письма</div>
+                <div id="sendRuleBlock" style="background: #ffffff; border-radius: 16px; padding: 24px 28px; margin: 20px 0 30px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid #eef2f4; transition: box-shadow 0.3s ease, border-color 0.3s ease;">
+                    <div style="margin-bottom: 24px;"><div style="font-size: 16px; font-weight: 600; color: #1e2b3c; margin-bottom: 12px;">Порядок отправки официальных писем</div></div>
+                    <div id="criticalRule" style="background: #fdf3f2; border-radius: 12px; padding: 18px 22px; margin-bottom: 28px; border-left: 4px solid #d9534f; transition: background 0.4s ease, box-shadow 0.4s ease;">
+                        <div style="font-weight: 700; font-size: 16px; color: #b33a34; margin-bottom: 10px;">ОТПРАВЛЯТЬ ТОЛЬКО ИЗ КАРТОЧКИ CRM</div>
+                        <p style="color: #4a3a39; font-size: 14px; line-height: 1.6; margin: 0;">Все официальные письма внешним контрагентам отправляются <strong>из карточки элемента CRM</strong> (Сделка, Заказ, Компания). Это гарантирует сохранность текста, вложений и всей истории в едином контуре.</p>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px;">
+                        <div><div style="font-weight: 600; color: #2e7d32; margin-bottom: 12px;">ПРАВИЛЬНО</div><ol style="margin: 0; padding-left: 20px; color: #2c3e4e; font-size: 14px; line-height: 1.7;"><li>Найти нужный элемент CRM</li><li>Перейти на вкладку «Письмо»</li><li>Подготовить письмо к отправке (используя бланк)</li><li>Прикрепить вложения</li><li>Нажать «Отправить»</li></ol></div>
+                        <div><div style="font-weight: 600; color: #c0392b; margin-bottom: 12px;">НЕПРАВИЛЬНО</div><ul style="margin: 0; padding-left: 20px; color: #4a5a6e; font-size: 14px; line-height: 1.7;"><li>Отправлять коллегам через почту</li><li>Сканировать отправленное письмо и хранить «где-то на диске»</li><li>Прикреплять сканы постфактум</li><li>Надеяться, что письмо будет легко найти в будущем</li></ul></div>
+                    </div>
+                    <div style="background: #f8fafc; border-radius: 12px; padding: 18px 22px; margin-bottom: 20px; border: 1px solid #e6ecf0;">
+                        <div style="font-weight: 600; color: #1e2b3c; margin-bottom: 10px;">Почему это важно</div>
+                        <ul style="margin: 0; padding-left: 20px; color: #2c3e4e; font-size: 14px; line-height: 1.7;"><li>Формируется <strong>истинная история</strong> переписки</li><li>Вы <strong>защищаете себя</strong> от будущих разбирательств</li><li>Письма не теряются при смене сотрудников</li><li>Вся коммуникация в едином контуре проекта</li></ul>
+                    </div>
+                    
+					
+					
+					<div style="background: #f8fafc; border-radius: 10px; padding: 14px 20px; border-left: 4px solid #5bc0de;">
+						<div style="font-weight: 600; color: #2c6b9e; margin-bottom: 8px;">Результат</div>
+						<div style="color: #2c3e4e; font-size: 14px; line-height: 1.6;">
+							В карточке CRM формируется единый архив переписки.<br>
+							Ни одно письмо не теряется: входящие письма фиксируются задачами (<a href="#sub-5-6" class="ref-link">раздел 5.6</a>), 
+							исходящие письма отправляются прямо из карточки Сделки/Заказа.<br>
+							Вся коммуникация — в одном месте, доступна каждому участнику.
+						</div>
+					</div>
+					
+					
+					
+                    <div style="margin-top: 24px; font-size: 14px; color: #7a4a48; background: #fef7f6; padding: 12px 20px; border-radius: 30px; border: 1px solid #f1cfca;">Отправил из CRM — сохранил историю, защитил себя и команду от будущих проблем</div>
+                </div>
+
+					                <!-- Приложение к разделу 12 (сворачиваемое) -->
+                <div class="collapsible" style="margin-top: 20px;">
+                    <div class="collapsible-trigger">
+                        <span class="collapse-icon">+</span>
+                        <span style="font-weight: 600; font-size: 16px;">Приложение к разделу 12 — Темы для писем</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="collapsible-content-inner" style="padding: 0;">
+                            <div class="appendix-block" style="margin-top: 0; border-radius: 0 0 16px 16px; border-left: 6px solid #d9534f;">
+                                <!-- Заголовок приложения уже не нужен внутри, он в trigger -->
+                                <table class="info-table">
+                                    <thead><tr><th>Тип письма</th><th>Пример темы</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>Коммерческое предложение</td><td>Коммерческое предложение №___ от ______</td></tr>
+                                        <tr><td>Запрос информации</td><td>Запрос технических характеристик на теплообменник Т-22</td></tr>
+                                        <tr><td>Ответ на запрос</td><td>Ответ на запрос от ______ №___</td></tr>
+                                        <tr><td>Согласование</td><td>Согласование чертежа общего вида (позиция 1‑V‑1501)</td></tr>
+                                        <tr><td>Отгрузка / доставка</td><td>Уведомление об отгрузке по договору №___</td></tr>
+                                        <tr><td>Оплата</td><td>Уточнение по оплате счёта №___</td></tr>
+                                        <tr><td>Технический вопрос</td><td>Техническое задание на расчёт сепаратора</td></tr>
+                                        <tr><td>Договор</td><td>Проект договора №___ на поставку</td></tr>
+                                        <tr><td>Рекламация / замечание</td><td>Замечания по поставке от ______</td></tr>
+                                    </tbody>
+                                </table>
+                                <div class="appendix-hint"><span>💡</span><span>Можно дополнить или изменить под свои типовые ситуации.</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+			</div>
+			<!-- Разделитель -->
+			<hr style="border: none; border-top: 1px solid #dce3e9; margin: 20px 0;">
+					            <!-- ==================== ПРЕДЛОЖИТЬ ИЗМЕНЕНИЕ В РЕГЛАМЕНТ ==================== -->
+            <div class="section" id="section-proposals">
+                <div class="section-title">Предложения. Дополнить и улучшить</div>
+                <ul class="step-list" style="margin-bottom: 24px;">
+                    <li>Регламент может быть дополнен или изменён после практического применения.</li>
+                    <li>Новые разделы вносятся в конец документа с сохранением сквозной нумерации.</li>
+                </ul>
+                
+                <!-- Форма обратной связи -->
+                <div style="background: #f8fafc; border-radius: 16px; padding: 24px 28px; margin: 20px 0; border: 1px solid #e6ecf0; text-align: center;">
+                    <div style="font-weight: 600; color: #1e2b3c; margin-bottom: 16px;">
+                        Видите проблему или знаете, как улучшить регламент?<br>
+                        Напишите — обсудим и внедрим.
+                    </div>
+                    
+                    <!-- Стандартная кнопка Битрикса -->
+                    <script data-b24-form="click/5/7fwl7n" data-skip-moving="true">
+                        (function(w,d,u){
+                            var s=d.createElement('script');s.async=true;s.src=u+'?'+(Date.now()/180000|0);
+                            var h=d.getElementsByTagName('script')[0];h.parentNode.insertBefore(s,h);
+                        })(window,document,'https://cdn-ru.bitrix24.ru/b34939712/crm/form/loader_5.js');
+                    </script>
+                    
+                    <div style="margin-top: 16px; font-size: 12px; color: #9aa9b9;">
+                        Предложение будет рассмотрено операционным менеджером.
+                    </div>
+                </div>
+            </div>
+            <!-- Разделитель -->
+			<hr style="border: none; border-top: 1px solid #dce3e9; margin: 20px 0;">
+			
+			
+			            <!-- ==================== ПРИЛОЖЕНИЕ 1. ГЛОССАРИЙ ==================== -->
+            <div class="section" id="appendix-glossary">
+                <div class="section-title">Приложение 1. Глоссарий</div>
+			<details class="accordion">
+    <summary>Глоссарий</summary>
+    <!-- Здесь ваш скрываемый контент -->
+    <table class="info-table">
+                    <thead><tr><th style="width:25%">Термин</th><th>Определение</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Родительская задача</strong></td><td>Главная задача, объединяющая дочерние. <em>(<a href="#sub-5-1" class="ref-link">5.1</a>)</em></td></tr>
+                        <tr><td><strong>Дочерняя задача</strong></td><td>Задача, привязанная к родительской. <em>(<a href="#sub-5-2" class="ref-link">5.2</a>)</em></td></tr>
+                        <tr><td><strong>Сделка / Элемент CRM</strong></td><td>Контейнер информации. <em>(<a href="#sub-5-1" class="ref-link">5.1</a>)</em></td></tr>
+                        <tr><td><strong>Группа «Продажи»</strong></td><td>Место хранения родительских задач. <em>(<a href="#sub-5-1" class="ref-link">5.1</a>)</em></td></tr>
+                        <tr><td><strong>Эстафетная задача</strong></td><td>Многоэтапная задача со сменой исполнителей. <em>(<a href="#section6" class="ref-link">6</a>)</em></td></tr>
+                        <tr><td><strong>Задача из письма</strong></td><td>Задача, созданная из входящего письма. <em>(<a href="#sub-5-6" class="ref-link">5.6</a>)</em></td></tr>
+                        <tr><td><strong>РП</strong></td><td>Руководитель проектов. <em>(<a href="#sub-10-1" class="ref-link">10.1</a>)</em></td></tr>
+                        <tr><td><strong>ГПП</strong></td><td>График подготовки производства. <em>(<a href="#sub-10-2" class="ref-link">10.2</a>)</em></td></tr>
+                        <tr><td><strong>ПКИ</strong></td><td>План контроля качества. <em>(<a href="#sub-10-2" class="ref-link">10.2</a>)</em></td></tr>
+                        <tr><td><strong>ГрИ</strong></td><td>График изготовления. <em>(<a href="#sub-10-2" class="ref-link">10.2.5</a>)</em></td></tr>
+                        <tr><td><strong>РКД</strong></td><td>Рабочая конструкторская документация.</td></tr>
+                        <tr><td><strong>ВО / СБ</strong></td><td>Чертёж общего вида / Сборочный чертёж.</td></tr>
+                        <tr><td><strong>Веха</strong></td><td>Ключевая контрольная точка проекта. <em>(<a href="#sub-10-2" class="ref-link">10.2.3</a>)</em></td></tr>
+                        <tr><td><strong>Канбан</strong></td><td>Отображение задач по колонкам.</td></tr>
+                        <tr><td><strong>HP / WP / WP(R)</strong></td><td>Статусы контрольных операций. <em>(<a href="#sub-10-3" class="ref-link">10.3</a>)</em></td></tr>
+                        <tr><td><strong>Исх. №</strong></td><td>Исходящий номер письма. <em>(<a href="#sub-12-3" class="ref-link">12.3</a>)</em></td></tr>
+                        <tr><td><strong>Бланк письма</strong></td><td>Утверждённый шаблон для внешней переписки. <em>(<a href="#sub-12-1" class="ref-link">12.1</a>)</em></td></tr>
+                    </tbody>
+                </table>
+			</details> 
+            </div>
+			
+            <!-- ==================== ПРИЛОЖЕНИЕ 2. РИСКИ, ПРОБЛЕМЫ И РЕШЕНИЯ ==================== -->
+			
+			<div class="pulse-card-gray" style="background: #ffffff; border-radius: 16px; padding: 24px 28px; margin: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid #eef2f4;">
+    <!-- Содержимое раздела -->
+	<div class="section" id="appendix-matrix">
+                <div class="section-title">Приложение 2. Риски, проблемы и решения <span class="toc-status in-progress">в разработке</span></div>
+				<div class="work-in-progress">Раздел находится в разработке.</div>
+                <div class="text" style="margin-bottom: 16px;">
+                    В этом разделе собраны типовые риски компании и проверенные способы их минимизации, основанные на реальных проблемах из практики.
+                </div>
+
+                <!-- БЛОК 1: ТИПОВЫЕ РИСКИ (ОБЩИЙ РЕЕСТР) -->
+                <details class="accordion" style="margin-bottom: 20px;">
+                    <summary>Типовые риски компании (общий реестр)</summary>
+                    <div style="padding: 16px 0 0 0;">
+                        <table class="info-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%;">Категория</th>
+                                    <th style="width: 40%;">Краткое описание риска</th>
+                                    <th style="width: 10%;">Уровень</th>
+                                    <th style="width: 25%;">Связанная проблема</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Организационный</td>
+                                    <td>Потеря критически важной информации при передаче проекта от продаж в производство</td>
+                                    <td><span style="background:#c0392b; color:white; padding:2px 8px; border-radius:12px; font-size:11px;">Высокий</span></td>
+                                    <td><a href="#problem-card-1" class="ref-link">Проблема 1 →</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Организационный</td>
+                                    <td>Слепое перенаправление входящих писем без пояснений и привязки к сделке</td>
+                                    <td><span style="background:#ffc107; color:#1e2b3c; padding:2px 8px; border-radius:12px; font-size:11px;">Средний</span></td>
+                                    <td><a href="#problem-card-2" class="ref-link">Проблема 2 →</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Организационный</td>
+                                    <td>Неуправляемые сроки задач: постановка «на вчера» и бесконтрольные переносы</td>
+                                    <td><span style="background:#c0392b; color:white; padding:2px 8px; border-radius:12px; font-size:11px;">Высокий</span></td>
+                                    <td><a href="#problem-card-3" class="ref-link">Проблема 3 →</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Организационный</td>
+                                    <td>Формальное закрытие задач без фиксации результата и вложений</td>
+                                    <td><span style="background:#ffc107; color:#1e2b3c; padding:2px 8px; border-radius:12px; font-size:11px;">Средний</span></td>
+                                    <td><a href="#problem-card-4" class="ref-link">Проблема 4 →</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Организационный</td>
+                                    <td>Разрозненные задачи внутри одной сделки, не связанные между собой</td>
+                                    <td><span style="background:#ffc107; color:#1e2b3c; padding:2px 8px; border-radius:12px; font-size:11px;">Средний</span></td>
+                                    <td><a href="#problem-card-5" class="ref-link">Проблема 5 →</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Коммуникационный</td>
+                                    <td>Потеря истории официальной переписки при отправке писем из личной почты</td>
+                                    <td><span style="background:#c0392b; color:white; padding:2px 8px; border-radius:12px; font-size:11px;">Высокий</span></td>
+                                    <td><a href="#problem-card-7" class="ref-link">Проблема 7 →</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="appendix-hint" style="margin-top: 16px; margin-bottom: 0;">
+                            <span>💡</span><span>Этот реестр пополняется по мере появления новых проблем. Если вы видите риск, которого здесь нет, сообщите через форму «Предложить дополнить и улучшить».</span>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- БЛОК 2: ПРОБЛЕМЫ И РЕШЕНИЯ (КАРТОЧКИ) -->
+                <div class="subsection-title" style="margin-top: 20px;">Карточки проблем и решений</div>
+                <div id="problemsContainer" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                    <!-- Карточки будут сгенерированы JS -->
+                </div>
+            </div>
+			<div class="footer-note">Раздел в разработке 04.05.2026</div>
+</div>
+			
+			
+			
+            
+
+            <!-- ==================== СТРУКТУРА ДОКУМЕНТА ==================== -->
+            <div class="section" id="appendix-structure">
+                <div class="collapsible">
+                    <div class="collapsible-trigger">
+                        <span class="collapse-icon">+</span>
+                        <span style="font-size: 20px; font-weight: 700; color: #d9534f;">Структура документа</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="collapsible-content-inner" style="padding: 0;">
+                            <div class="structure-grid">
+                                <div class="structure-card"><span class="struct-num">1</span><a href="#section1" class="struct-link">Постановка задач → Формулируем и ставим задачи</a><span class="struct-status approved">утвержден</span></div>
+                                <div class="structure-card"><span class="struct-num">2</span><a href="#section2" class="struct-link">Сроки выполнения → Назначаем и переносим сроки</a><span class="struct-status approved">утвержден</span></div>
+                                <div class="structure-card"><span class="struct-num">3</span><a href="#section3" class="struct-link">Контроль выполнения → Контролируем и завершаем задачи</a><span class="struct-status approved">утвержден</span></div>
+                                <div class="structure-card"><span class="struct-num">4</span><a href="#section4" class="struct-link">Взаимодействие в чате → Общаемся в чатах задач</a><span class="struct-status approved">утвержден</span></div>
+                                <div class="structure-card"><span class="struct-num">5</span><a href="#section5" class="struct-link">Главные задачи → Следим за порядком в задачах и письмах</a><span class="struct-status approved">утвержден</span></div>
+                                <div class="structure-card"><span class="struct-num">6</span><a href="#section6" class="struct-link">Многоэтапные задачи → Быстро работаем в одной задаче</a><span class="struct-status approved">утвержден</span></div>
+                                <div class="structure-card"><span class="struct-num">7</span><a href="#section7" class="struct-link">Контроль и ответственность → Разграничиваем и несём ответственность</a><span class="struct-status approved">утвержден</span></div>
+                                <div class="structure-card"><span class="struct-num">8</span><a href="#section8" class="struct-link">CRM → Находим "наших" клиентов, определяем их проблемы/задачи и предлагаем решения</a><span class="struct-status progress">в очереди</span></div>
+                                <div class="structure-card"><span class="struct-num">9</span><a href="#section9" class="struct-link">Документооборот → Систематизируем документооборот</a><span class="struct-status progress">в очереди</span></div>
+                                <div class="structure-card"><span class="struct-num">10</span><a href="#section10" class="struct-link">Производство → Управляем производственными проектами</a><span class="struct-status approved-active">утвержден • внедряется</span></div>
+                                <div class="structure-card"><span class="struct-num">11</span><a href="#section11" class="struct-link">Снабжение и логистика → Организуем снабжение, обеспечиваем и поставляем</a><span class="struct-status approved">утвержден</span></div>
+                                <div class="structure-card"><span class="struct-num">12</span><a href="#section12" class="struct-link">Письма и деловая переписка → Оформляем и ведем переписку правильно</a><span class="struct-status approved">утвержден</span></div>
+                                <div class="structure-card"><span class="struct-num">12.9</span><a href="#sub-12-9" class="struct-link">Отправка письма → Отправляем письма из карточек CRM</a><span class="struct-status approved">утвержден</span></div>
+								<div class="structure-card"><span class="struct-num">📬</span><a href="#section-proposals" class="struct-link">Предложить дополнить и улучшить → Вместе делаем компанию лучше</a><span class="struct-status approved">утвержден</span></div>
+                                <div class="structure-card"><span class="struct-num">📎</span><a href="#appendix-glossary" class="struct-link">Приложение 1. Глоссарий → Соблюдаем логический закон тождества</a><span class="struct-status">справочник</span></div>
+                                <div class="structure-card"><span class="struct-num">📎</span><a href="#appendix-matrix" class="struct-link">Приложение 2. Проблемы и решения → Фиксируем ограничения компании </a><span class="struct-status">справочник</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-note">Регламент 5.0 утвержден 22.04.2026</div>
+        </div>
+    </div>
+
+    <!-- АНИМАЦИЯ «ДЫХАНИЯ» -->
+    <script>
+        (function() {
+            "use strict";
+            function applyPulse() {
+                var block = document.getElementById('sendRuleBlock');
+                if (block) block.classList.add('pulse-card');
+                
+				document.querySelectorAll('.toc-item').forEach(function(item) {
+					var status = item.querySelector('.toc-status');
+					if (status) {
+						var text = status.textContent.trim().toLowerCase();
+						if (/тестируется|внедряется/.test(text)) {
+							item.classList.add('pulse-attention');
+						} else if (/в разработке/.test(text)) {
+							item.classList.add('pulse-attention-gray');
+						}
+					}
+				});
+
+				document.querySelectorAll('.structure-card').forEach(function(card) {
+					var status = card.querySelector('.struct-status');
+					if (status) {
+						var text = status.textContent.trim().toLowerCase();
+						card.style.transition = 'box-shadow 0.3s, background 0.3s';
+						if (/тестируется|внедряется/.test(text)) {
+							card.classList.add('pulse-card');
+						} else if (/в разработке/.test(text)) {
+							card.classList.add('pulse-card-gray');
+						}
+					}
+				});
+				
+				
+            }
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyPulse);
+            else applyPulse();
+        })();
+		
+    </script>
+	
+	
+	<script>
+(function() {
+    function initCollapsibles() {
+        var collapsibles = document.querySelectorAll('.collapsible');
+        for (var i = 0; i < collapsibles.length; i++) {
+            (function(container) {
+                var trigger = container.querySelector('.collapsible-trigger');
+                var content = container.querySelector('.collapsible-content');
+                if (!trigger || !content) return;
+                
+                trigger.addEventListener('click', function() {
+                    var isActive = container.classList.contains('active');
+                    if (isActive) {
+                        // Закрываем
+                        content.style.maxHeight = '0';
+                        container.classList.remove('active');
+                    } else {
+                        // Открываем: устанавливаем max-height равным реальной высоте контента
+                        container.classList.add('active');
+                        // Временно показываем, чтобы измерить высоту
+                        content.style.maxHeight = 'none';
+                        var inner = content.querySelector('.collapsible-content-inner');
+                        var height = inner ? inner.offsetHeight : content.scrollHeight;
+                        content.style.maxHeight = '0'; // сбрасываем
+                        // Запускаем анимацию на следующем кадре
+                        requestAnimationFrame(function() {
+                            content.style.maxHeight = height + 'px';
+                        });
+                    }
+                });
+            })(collapsibles[i]);
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCollapsibles);
+    } else {
+        initCollapsibles();
+    }
+})();
+</script>
+	<script>
+    // При загрузке страницы всегда начинаем с верхней точки
+    window.addEventListener('load', function() {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+    });
+    // На случай, если load уже произошел
+    if (document.readyState === 'complete') {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Данные карточек: проблема, решение, ссылка, тип, заголовок проблемы
+    var cardsData = [
+        {
+            type: "approved",
+            problemTitle: "Потеря информации при передаче проекта",
+            problem: "При передаче проекта от продаж в производство теряются важные детали: устные договорённости с заказчиком, особые условия, технические нюансы. Это приводит к ошибкам в проектировании и срыву сроков.",
+            solution: "Провести обязательную вводную встречу между продавцом и руководителем проекта с фиксацией всех договорённостей в задаче, привязанной к сделке в CRM.",
+            link: "#sub-10-1"
+        },
+        {
+            type: "approved",
+            problemTitle: "Слепое перенаправление входящих писем",
+            problem: "Входящие письма от заказчиков пересылаются сотрудникам без пояснений: непонятно, что нужно сделать, в какие сроки и к какой сделке это относится. Письма теряются в личной почте, а история переписки недоступна команде.",
+            solution: "Вместо пересылки письма создавать задачу из письма с глагольным заголовком и привязкой к Сделке. Постановщик формулирует задачу так, чтобы исполнителю были ясны требуемый результат и сроки.",
+            link: "#sub-5-6"
+        },
+        {
+            type: "approved",
+            problemTitle: "Неуправляемые сроки и переносы",
+            problem: "Задачи часто ставятся со сроком «вчера», а исполнители переносят их по несколько раз без согласования. Это разрушает планирование, искажает отчётность и создаёт ощущение, что дедлайны — формальность.",
+            solution: "Срок задачи не ставится на текущий день — только на завтра или позже. Если задача срочная, сотрудника просят лично. Переносить срок можно не более двух раз, затем требуется согласование с постановщиком.",
+            link: "#sub-2-1"
+        },
+        {
+            type: "approved",
+            problemTitle: "Завершение задач без результата",
+            problem: "Задачи закрываются формально: без прикреплённого результата, без описания того, что именно сделано. Через неделю невозможно вспомнить, была ли выполнена задача, и где лежат файлы.",
+            solution: "При завершении задачи обязательно заполнять поле «Результат» — описывать, что именно сделано, и прикреплять файлы. Это фиксирует историю выполнения.",
+            link: "#sub-3-3"
+        },
+        {
+            type: "approved",
+            problemTitle: "Сложно искать задачи",
+            problem: "Задачи по одной сделке создаются разрозненно в разных элементах CRM, не связаны между собой. Это создаёт хаос, теряется порядок, усложняется поиск информации, задач, результатов.",
+            solution: "Все задачи по сделке привязываются к единой родительской задаче (ГЛАВНАЯ ЗАДАЧА), которая собирает все задачи и отображает их удобным списком.",
+            link: "#sub-5-1"
+        },
+        {
+            type: "in-progress",
+            problemTitle: "Множество чатов и потеря договоренностей, информации",
+            problem: "У нас слишком много чатов: сделки, задачи, техотдел, документооборот. Информация размазана по десяткам мест, сотрудники тратят время на поиск.",
+            solution: "Использовать только чат Сделки и чаты задач (после перехода в производство — заместо чата Сделки используем чат Проекта). Вся коммуникация, связанная со сделкой, идёт в её чате.",
+            link: null
+        },
+        {
+                     type: "approved",
+            problemTitle: "Потеря истории исходящих писем",
+            problem: "Исходящие письма отправляются через рабочую почту сотрудников, а не из CRM. История переписки не сохраняется в сделке, в спорной ситуации невозможно определить, что и когда было отправлено. Компания не имеет контроля над официальной перепиской и уязвима при возникновении проблем в том числе юридических.",
+            solution: "Все официальные исходящие письма отправлять только из карточки CRM (Сделка, Заказ, Компания). Это сохраняет письмо, вложения и дату отправки в истории сделки, защищает сотрудника и компанию.",
+            link: "#sub-12-9"
+        }	
+    ];
+
+    var container = document.getElementById('problemsContainer');
+    if (!container) {
+        console.error('Контейнер #problemsContainer не найден');
+        return;
+    }
+
+    cardsData.forEach(function(card, index) {
+        var cardDiv = document.createElement('div');
+        cardDiv.className = 'flip-card';
+		cardDiv.id = 'problem-card-' + (index + 1);
+        cardDiv.style.cssText = 'display: grid; grid-template: "content" 1fr / 1fr; border-radius: 12px; overflow: hidden;';
+        cardDiv.classList.add('pulse-card');
+
+        // Слой проблемы с заголовком
+        var problemDiv = document.createElement('div');
+        problemDiv.className = 'card-face problem-face';
+        problemDiv.style.cssText = 'grid-area: content; min-height: 100px; padding: 16px; border: 1px solid #f1cdca; border-radius: 12px; background: #fff; transition: opacity 0.8s ease-in-out;';
+        problemDiv.innerHTML = '<div style="font-weight:600; color:#b33a34; margin-bottom:6px;">Проблема: <span style="font-weight:400; color:#7a4a48;">' + card.problemTitle + '</span></div><div style="color:#4a3a39;">' + card.problem + '</div>';
+
+        // Слой решения
+        var solutionDiv = document.createElement('div');
+        solutionDiv.className = 'card-face solution-face';
+        solutionDiv.style.cssText = 'grid-area: content; min-height: 100px; padding: 16px; border: 1px solid #c8e6c9; border-radius: 12px; background: #fff; transition: opacity 0.8s ease-in-out; opacity: 0; pointer-events: none;';
+        
+        var solutionHtml = '';
+        if (card.type === 'needs-management') {
+            solutionHtml = '<div style="font-weight:600; color:#b33a34; margin-bottom:6px;">Требуется решение</div><div style="color:#4a3a39;">' + card.solution + '</div>';
+        } else {
+            var statusText = card.type === 'in-progress' ? '<span style="color:#b85c00; font-weight:600;"> (В очереди)</span>' : '';
+            var linkHtml = card.link ? '<a href="' + card.link + '" style="color:#d9534f; font-weight:500;">Перейти в раздел →</a>' : '';
+            solutionHtml = '<div style="font-weight:600; color:#2e7d32; margin-bottom:6px;">Решение' + statusText + '</div><div style="color:#2c3e4e;">' + card.solution + ' ' + linkHtml + '</div>';
+        }
+        solutionDiv.innerHTML = solutionHtml;
+
+        cardDiv.appendChild(problemDiv);
+        cardDiv.appendChild(solutionDiv);
+        container.appendChild(cardDiv);
+
+        // Наведение мыши – переключение слоёв и pointer-events
+        cardDiv.addEventListener('mouseenter', function() {
+            problemDiv.style.opacity = '0';
+            problemDiv.style.pointerEvents = 'none';
+            solutionDiv.style.opacity = '1';
+            solutionDiv.style.pointerEvents = 'auto';
+            if (card.type === 'needs-management') {
+                cardDiv.classList.add('pulse-card');
+                cardDiv.classList.remove('pulse-card-green');
+            } else {
+                cardDiv.classList.remove('pulse-card');
+                cardDiv.classList.add('pulse-card-green');
+            }
+        });
+
+        cardDiv.addEventListener('mouseleave', function() {
+            problemDiv.style.opacity = '1';
+            problemDiv.style.pointerEvents = 'auto';
+            solutionDiv.style.opacity = '0';
+            solutionDiv.style.pointerEvents = 'none';
+            cardDiv.classList.add('pulse-card');
+            cardDiv.classList.remove('pulse-card-green');
+        });
+
+        // Анимация появления
+        cardDiv.style.opacity = '0';
+        cardDiv.style.transition = 'opacity 0.5s ease-in-out';
+        setTimeout(function() {
+            cardDiv.style.opacity = '1';
+        }, index * 100);
+    });
+});
+</script>	
+
+<script>
+(function() {
+    const strategyOptions = ['Избегание', 'Смягчение', 'Перенос', 'Реагирование', 'Принятие'];
+    const probabilityOptions = ['Низкая', 'Средняя', 'Высокая'];
+    const lossOptions = ['Низкий', 'Средний', 'Высокий'];
+
+    // Функция расчета серьезности (число)
+    function calcSeriousness(prob, loss) {
+        if (prob === 'Низкая' && loss === 'Низкий') return 1;
+        if (prob === 'Низкая' && loss === 'Средний') return 2;
+        if (prob === 'Низкая' && loss === 'Высокий') return 3;
+        if (prob === 'Средняя' && loss === 'Низкий') return 2;
+        if (prob === 'Средняя' && loss === 'Средний') return 4;
+        if (prob === 'Средняя' && loss === 'Высокий') return 6;
+        if (prob === 'Высокая' && loss === 'Низкий') return 3;
+        if (prob === 'Высокая' && loss === 'Средний') return 6;
+        if (prob === 'Высокая' && loss === 'Высокий') return 9;
+        return null;
+    }
+
+    // Цвет и текст для серьезности
+    function getSeriousnessStyle(value) {
+        if (value <= 2) return { color: 'white', bg: '#2e7d32', text: value + ' — Низкая' };
+        if (value <= 4) return { color: '#1e2b3c', bg: '#ffc107', text: value + ' — Средняя' };
+        return { color: 'white', bg: '#c0392b', text: value + ' — Большая' };
+    }
+
+    // Обновить ячейку серьезности в строке
+    function updateSeriousnessCell(row) {
+        const probSelect = row.querySelector('.probability-cell select');
+        const lossSelect = row.querySelector('.loss-cell select');
+        const serCell = row.querySelector('.risk-seriousness');
+        if (!probSelect || !lossSelect || !serCell) return;
+
+        const prob = probSelect.value;
+        const loss = lossSelect.value;
+        const value = calcSeriousness(prob, loss);
+        if (value !== null) {
+            const style = getSeriousnessStyle(value);
+            serCell.innerText = style.text;
+            serCell.style.backgroundColor = style.bg;
+            serCell.style.color = style.color;
+            serCell.style.fontWeight = '700';
+            serCell.style.textAlign = 'center';
+        } else {
+            serCell.innerText = '—';
+            serCell.style.backgroundColor = '';
+            serCell.style.color = '';
+            serCell.style.fontWeight = '';
+        }
+    }
+
+    // Создать выпадающий список для ячейки
+    function createSelect(cell, options, selectedValue, onChange) {
+        const select = document.createElement('select');
+        select.style.cssText = 'width:100%; height:100%; border:none; background:transparent; font-family:inherit; font-size:13px; color:#1e2b3c; padding:8px 4px; cursor:pointer; appearance:auto;';
+        options.forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt;
+            option.textContent = opt;
+            if (opt === selectedValue) option.selected = true;
+            select.appendChild(option);
+        });
+        if (onChange) select.addEventListener('change', onChange);
+        cell.innerHTML = '';
+        cell.appendChild(select);
+        return select;
+    }
+
+    // Инициализация строки: вставляет select'ы и вычисляет серьезность
+    function initRow(row) {
+        const probCell = row.querySelector('.probability-cell');
+        const lossCell = row.querySelector('.loss-cell');
+        const stratCell = row.querySelector('.strategy-cell');
+        const probValue = probCell ? probCell.dataset.value || 'Низкая' : 'Низкая';
+        const lossValue = lossCell ? lossCell.dataset.value || 'Низкий' : 'Низкий';
+        const stratValue = stratCell ? stratCell.dataset.value || strategyOptions[0] : strategyOptions[0];
+
+        if (probCell) {
+            createSelect(probCell, probabilityOptions, probValue, () => updateSeriousnessCell(row));
+        }
+        if (lossCell) {
+            createSelect(lossCell, lossOptions, lossValue, () => updateSeriousnessCell(row));
+        }
+        if (stratCell) {
+            createSelect(stratCell, strategyOptions, stratValue);
+        }
+        updateSeriousnessCell(row);
+    }
+
+    // Добавление новой пустой строки
+    function addRow() {
+        const tbody = document.querySelector('#riskRegisterTable tbody');
+        const newRow = document.createElement('tr');
+        newRow.className = 'risk-row';
+        newRow.innerHTML = `
+            <td class="row-number"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td class="probability-cell" data-value="Низкая"></td>
+            <td class="loss-cell" data-value="Низкий"></td>
+            <td class="risk-seriousness"></td>
+            <td class="strategy-cell" data-value="Избегание"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+        `;
+        tbody.appendChild(newRow);
+        initRow(newRow);
+        renumberRows();
+    }
+
+    // Удаление последней строки
+    function removeLastRow() {
+        const tbody = document.querySelector('#riskRegisterTable tbody');
+        const rows = tbody.querySelectorAll('tr.risk-row');
+        if (rows.length <= 1) {
+            alert('Нельзя удалить все строки. Оставьте хотя бы один риск.');
+            return;
+        }
+        rows[rows.length - 1].remove();
+        renumberRows();
+    }
+
+    // Перенумерация строк
+    function renumberRows() {
+        const rows = document.querySelectorAll('#riskRegisterTable tbody tr.risk-row');
+        rows.forEach((row, idx) => {
+            const numCell = row.querySelector('.row-number');
+            if (numCell) numCell.innerText = idx + 1;
+        });
+    }
+
+    // Инициализация при загрузке
+    document.addEventListener('DOMContentLoaded', function() {
+        // Инициализируем все существующие строки
+        document.querySelectorAll('#riskRegisterTable tbody tr.risk-row').forEach(row => initRow(row));
+        document.getElementById('addRiskRowBtn').addEventListener('click', addRow);
+        document.getElementById('removeLastRiskBtn').addEventListener('click', removeLastRow);
+    });
+})();
+</script>
+	
+</body>
+</html>

@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Реестр рисков проекта</title>
+    <style>
+        /* ==================== 1. БАЗОВЫЕ СБРОСЫ И ОБЩИЕ СТИЛИ ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding: 40px;
+        }
+
+        /* ==================== 2. КАРТОЧКА ДОКУМЕНТА ==================== */
+        .document {
+            max-width: 1400px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .brand-bar {
+            height: 8px;
+            background: #d9534f;
+            width: 100%;
+        }
+
+        /* ==================== 3. ШАПКА ДОКУМЕНТА ==================== */
+        .document-header {
+            padding: 28px 32px 20px 32px;
+            border-bottom: 1px solid #eef2f4;
+            position: relative;
+        }
+
+        .brand {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .brand-name {
+            font-size: 28px;
+            font-weight: 800;
+            color: #d9534f;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-tagline {
+            font-size: 12px;
+            color: #7e8fa1;
+        }
+
+        .doc-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e2b3c;
+            margin-bottom: 8px;
+        }
+
+        .doc-meta {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #7e8fa1;
+            border-top: 1px solid #eef2f4;
+            padding-top: 16px;
+        }
+
+        .hidden-brand {
+            display: none;
+        }
+
+        /* ==================== 5. ТЕЛО ДОКУМЕНТА ==================== */
+        .document-body {
+            padding: 24px 32px 32px 32px;
+        }
+
+        /* ==================== 6. РАЗДЕЛЫ И ЗАГОЛОВКИ ==================== */
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #d9534f;
+            margin-bottom: 16px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #d9534f;
+            display: inline-block;
+            min-width: 200px;
+            outline: none;
+        }
+
+        .section-title:empty::before {
+            content: attr(data-placeholder);
+            color: #9aa9b9;
+            font-weight: 400;
+        }
+
+        .subsection-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e2b3c;
+            margin: 20px 0 12px 0;
+        }
+
+        /* ==================== 7. ТЕКСТОВЫЕ ЭЛЕМЕНТЫ ==================== */
+        .text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #2c3e4e;
+            margin-bottom: 16px;
+        }
+
+        /* ==================== 8. СПИСКИ ==================== */
+        .step-list {
+            margin: 12px 0 12px 24px;
+        }
+
+        .step-list li {
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #2c3e4e;
+        }
+
+        /* ==================== 9. ТАБЛИЦЫ ==================== */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+
+        .info-table th {
+            background: #f8fafc;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #4a5a6e;
+            border: 1px solid #eef2f4;
+        }
+
+        .info-table td {
+            padding: 10px 12px;
+            border: 1px solid #eef2f4;
+            vertical-align: top;
+            color: #1e2b3c;
+        }
+		@keyframes pulseRedHeader {
+			0%   { background-color: #f8fafc; color: #4a5a6e; }
+			50%  { background-color: #fce4e4; color: #b33a34; }
+			100% { background-color: #f8fafc; color: #4a5a6e; }
+		}
+		.pulse-red {
+			animation: pulseRedHeader 2.5s ease-in-out infinite;
+		}
+
+        /* ==================== 10. БЛОКИ С ВЫДЕЛЕНИЕМ ==================== */
+        .note {
+            background: #fef7f5;
+            border-left: 4px solid #d9534f;
+            padding: 14px 18px;
+            margin: 20px 0;
+            font-size: 13px;
+            color: #4a5a6e;
+            border-radius: 8px;
+        }
+
+        .ref-link {
+            color: #d9534f;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ==================== 13. ПОДВАЛ ==================== */
+        .footer-note {
+            margin-top: 32px;
+            padding-top: 20px;
+            border-top: 1px solid #eef2f4;
+            font-size: 11px;
+            color: #9aa9b9;
+            text-align: center;
+        }
+
+        /* ==================== АККОРДЕОН ==================== */
+        .accordion {
+            border: 1px solid #eef2f4;
+            border-radius: 12px;
+            margin: 16px 0;
+            padding: 12px 16px;
+            background: #fafbfc;
+            transition: border-color 0.2s;
+        }
+
+        .accordion[open] {
+            border-color: #dce3e9;
+        }
+
+        .accordion summary {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1e2b3c;
+            cursor: pointer;
+            outline: none;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .accordion summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .accordion summary::before {
+            content: "+";
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            background: #d9534f10;
+            color: #d9534f;
+            font-weight: 700;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+
+        .accordion[open] summary::before {
+            content: "−";
+            background: #d9534f20;
+        }
+
+        /* ==================== АДАПТИВНОСТЬ ==================== */
+        @media (max-width: 600px) {
+            .document-body {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="document">
+        <div class="brand-bar"></div>
+        <div class="document-body">
+
+            <!-- ==================== ПРИЛОЖЕНИЕ 3. РЕЕСТР РИСКОВ ПРОЕКТА ==================== -->
+            <div id="risk-register-app" class="section">
+                <div class="section-title" contenteditable="true" data-placeholder="Наименование проекта"></div>
+
+                <div class="text" style="margin-bottom:20px;">
+                    Инструмент для последовательного управления рисками производственного проекта.
+                    Заполните строки, выбирайте оценки — серьёзность рассчитается автоматически.
+                </div>
+
+                <!-- Инструкция -->
+                <details class="accordion" style="margin-bottom:20px;">
+                    <summary>Как работать с реестром: пошаговый алгоритм</summary>
+                    <div style="padding:0 16px 16px 16px;">
+                        <div class="subsection-title" style="font-size:16px;">1. Выявление и описание</div>
+                        <div class="text">Заполните столбцы «Область», «Источник», «Первопричина», «Условие», «Последствие», «Убыток».</div>
+                        <div class="subsection-title" style="font-size:16px;">2. Приоритизация</div>
+                        <div class="text">Выберите <strong>вероятность</strong> и <strong>убыток</strong> из списков. Серьёзность (1–9) окрасится: 🟢 1–2 (низкая), 🟡 3–4 (средняя), 🔴 6–9 (большая).</div>
+                        <div class="subsection-title" style="font-size:16px;">3. Интеграция в план</div>
+                        <div class="text">Выберите стратегию реагирования и опишите конкретный план действий со ссылками на задачи проекта.</div>
+                        <div class="subsection-title" style="font-size:16px;">4. Мониторинг</div>
+                        <div class="text">На контрольных точках обновляйте статус (например, «на контроле», «реализовался», «миновал»).</div>
+                        <div class="subsection-title" style="font-size:16px;">5. Корректирование</div>
+                        <div class="text">Если риск изменился — зафиксируйте корректирующие действия.</div>
+                        <div class="subsection-title" style="font-size:16px;">6. Ретроспектива</div>
+                        <div class="text">После завершения проекта запишите выводы для будущих проектов.</div>
+                    </div>
+                </details>
+
+                <!-- Таблица -->
+                <div style="overflow-x:auto; border:1px solid #eef2f4; border-radius:12px; margin-bottom:20px;">
+                    <table id="riskRegisterTable" class="info-table" style="min-width:2800px; margin:0; border-collapse:collapse; table-layout:fixed;">
+                        <colgroup>
+                            <col style="width:50px;">
+                            <col style="width:130px;">
+                            <col style="width:130px;">
+                            <col style="width:250px;">
+                            <col style="width:250px;">
+                            <col style="width:250px;">
+                            <col style="width:220px;">
+                            <col style="width:130px;">
+                            <col style="width:130px;">
+                            <col style="width:130px;">
+                            <col style="width:150px;">
+                            <col style="width:280px;">
+                            <col style="width:170px;">
+                            <col style="width:250px;">
+                            <col style="width:250px;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Область</th>
+                                <th>Источник</th>
+                                <th>Первопричина</th>
+								<th class="pulse-red">Условие</th>
+								<th class="pulse-red">Последствие</th>
+								<th>Убыток</th>
+								<th>Вероятность</th>
+                                <th>Убыток (оценка)</th>
+                                <th>Серьёзность</th>
+                                <th>Стратегия</th>
+                                <th>План</th>
+                                <th>Статус мониторинга</th>
+                                <th>Корректировка</th>
+                                <th>Ретроспектива (выводы)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="risk-row">
+                                <td class="row-number">1</td>
+                                <td contenteditable="true">Процессы (снабжение)</td>
+                                <td contenteditable="true">Поставщик материалов</td>
+                                <td contenteditable="true">Единственный поставщик специфической стали</td>
+                                <td contenteditable="true">Срыв поставки из-за перегруженности поставщика</td>
+                                <td contenteditable="true">Остановка изготовления корпуса, срыв общего графика</td>
+                                <td contenteditable="true">Смещение срока проекта на 2–3 недели, штрафные санкции</td>
+                                <td class="probability-cell" data-value="Средняя"></td>
+                                <td class="loss-cell" data-value="Высокий"></td>
+                                <td class="risk-seriousness"></td>
+                                <td class="strategy-cell" data-value="Смягчение"></td>
+                                <td contenteditable="true">1. Поиск альтернативного поставщика. 2. Рамочный договор с резервным. 3. Задача в проекте — контроль сроков.</td>
+                                <td contenteditable="true">На контроле</td>
+                                <td contenteditable="true">–</td>
+                                <td contenteditable="true">–</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Кнопки управления -->
+                <div style="display:flex; gap:12px; margin-bottom:24px;">
+                    <button id="addRiskRowBtn" style="background:#d9534f; color:white; border:none; padding:8px 18px; border-radius:8px; font-weight:600; cursor:pointer; transition:0.2s; box-shadow:0 2px 6px rgba(217,83,79,0.2);">＋ Добавить риск</button>
+                    <button id="removeRiskRowBtn" style="background:#f0f0f0; color:#4a5a6e; border:1px solid #dce3e9; padding:8px 18px; border-radius:8px; font-weight:500; cursor:pointer; transition:0.2s;">− Удалить строку по номеру</button>
+                    <button id="exportRiskCSV" style="background:#f8fafc; color:#2c3e4e; border:1px solid #dce3e9; padding:8px 18px; border-radius:8px; font-weight:500; cursor:pointer; transition:0.2s; margin-left:auto;">📥 Экспорт в CSV</button>
+                </div>
+
+
+				
+				
+				
+				
+<details class="accordion" style="margin-top:20px;">
+    <summary>Инструкция с примерами для заполнения реестра рисков</summary>
+    <div style="padding:16px 0; display:flex; flex-direction:column; gap:16px;">
+        
+		<details class="accordion">
+    <summary>Шаг 1. Выявление и описание</summary>
+	<!-- Здесь скрываемый контент -->
+	 <!-- Шаг 1: Выявление и описание -->
+    <div style="margin-top:12px;"><strong>Примеры областей и источников</strong></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px 24px; margin-top:8px;">
+                <div>
+                    <div style="font-weight:600; color:#4a5a6e; margin-bottom:4px;">Области</div>
+                    <ul class="step-list">
+                        <li>Люди (квалификация, доступность)</li>
+                        <li>Процессы (снабжение, проектирование, контроль)</li>
+                        <li>Материалы (доступность, качество)</li>
+                        <li>Оборудование (оснастка, станки)</li>
+                        <li>Внешние условия (законодательство, экономика)</li>
+                        <li>Информация (требования, спецификации)</li>
+                    </ul>
+                </div>
+                <div>
+                    <div style="font-weight:600; color:#4a5a6e; margin-bottom:4px;">Источники</div>
+                    <ul class="step-list">
+                        <li>Клиент (изменения требований, нет опыта)</li>
+                        <li>Компания (перегрузка, приоритеты)</li>
+                        <li>Поставщик (срыв сроков, качество)</li>
+                        <li>Производственный партнёр (изготовитель)</li>
+                        <li>Команда (нехватка компетенций)</li>
+                        <li>Рынок (цены, дефицит материалов)</li>
+                        <li>Нормативные требования (сертификация, ТР ТС)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="margin-top:14px;"><strong>Примеры условий и последствий (сам риск) — 
+                <span style="background:#fef0ee; color:#c0392b; padding:2px 8px; border-radius:4px; font-weight:600;">выделите это в своей строке</span>
+            </strong></div>
+            <ul class="step-list">
+                <li><strong>Условие:</strong> поставщик сообщил о задержке отгрузки на 2 недели. <strong>Последствие:</strong> срыв срока изготовления корпуса аппарата.</li>
+                <li><strong>Условие:</strong> в спецификации не указан тип уплотнения для агрессивной среды. <strong>Последствие:</strong> подобран неподходящий материал, потребуется замена.</li>
+                <li><strong>Условие:</strong> конструктор уходит в отпуск до согласования РКД. <strong>Последствие:</strong> задержка выдачи документации изготовителю.</li>
+            </ul>
+
+            <div style="margin-top:14px;"><strong>Примеры первопричин</strong> (обычно выясняются после описания самого риска)</div>
+            <ul class="step-list">
+                <li>Отсутствие резервного поставщика в реестре.</li>
+                <li>Клиент впервые работает с ИТ-специалистами (не имел опыта, не учли особенности среды).</li>
+                <li>Все сотрудники заняты на параллельных проектах.</li>
+                <li>Слабая экспертиза в законодательстве по сертификации.</li>
+            </ul>
+
+            <div style="margin-top:14px;"><strong>Примеры убытков</strong></div>
+            <ul class="step-list">
+                <li>Смещение общего графика проекта на 3 недели, штрафные санкции.</li>
+                <li>Дополнительные затраты на переделку узла — 350 000 руб.</li>
+                <li>Потеря доверия заказчика, риск расторжения контракта.</li>
+            </ul>
+        
+    
+		</details>
+		
+				<details class="accordion">
+			<summary>Шаг 2. Приоритизация</summary>
+			<!-- Здесь скрываемый контент -->
+			<!-- Шаг 2: Приоритизация -->
+					<div>
+						<ul class="step-list">
+							<li><span style="background:#c0392b; color:white; padding:2px 8px; border-radius:4px;">Красный (9)</span> — Высокая вероятность + высокий убыток: <strong>срочный план обязателен</strong></li>
+							<li><span style="background:#ffc107; color:#1e2b3c; padding:2px 8px; border-radius:4px;">Жёлтый (4)</span> — Средняя вероятность + средний убыток: <strong>запланировать действия</strong></li>
+							<li><span style="background:#2e7d32; color:white; padding:2px 8px; border-radius:4px;">Зелёный (1)</span> — Низкая вероятность + низкий убыток: <strong>можно применить перенос, реагирование или принятие, не тратя внимание впустую</strong></li>
+						</ul>
+					</div>
+			   </details>     
+					
+
+					<details class="accordion">
+						<summary>Шаг 3. Стратегии и интеграция в план</summary>
+						<!-- Здесь скрываемый контент -->
+						<!-- Шаг 3: Стратегии и интеграция в план -->
+							<div>            
+								<div style="margin-top:12px;"><strong>Избегание</strong></div>
+								<div class="text" style="margin-bottom:8px;">Полное устранение условия риска, обычно через изменение решения или подхода. Проактивная стратегия — самая эффективная. <em>Пример: сменили концепцию аппарата, чтобы не использовать дефицитный сплав.</em></div>
+								
+								<div style="margin-top:12px;"><strong>Смягчение</strong></div>
+								<div class="text" style="margin-bottom:8px;">Снижение вероятности или размера убытка. Проактивная стратегия, хороша, когда избегание невозможно. <em>Пример: запустили изготовление без рекомендательной системы, добавили другие полезные функции, чтобы уложиться в срок.</em></div>
+								
+								<div style="margin-top:12px;"><strong>Реагирование</strong></div>
+								<div class="text" style="margin-bottom:8px;">План действий на случай реализации риска. Реактивная стратегия — менее эффективна, но допустима для средних рисков. <em>Пример: после сбоя облачной платформы оперативно устранили причину, оповестили клиентов, провели стресс-тест.</em></div>
+								
+								<div style="margin-top:12px;"><strong>Принятие</strong></div>
+								<div class="text" style="margin-bottom:8px;">Осознанное решение не предпринимать активных действий, только мониторинг. Реактивная стратегия для низких рисков. <em>Пример: вышли на рынок с инновационным VR-приложением, несмотря на конкурентов, рассчитывая на уникальность.</em></div>
+								
+								<div style="margin-top:12px;"><strong>Перенос</strong></div>
+								<div class="text" style="margin-bottom:8px;">Передача ответственности за риск и убыток третьей стороне (страховка, аутсорсинг, SLA). Применяется редко, но при возможности обязателен. <em>Пример: передали хостинг и безопасность облачному провайдеру с гарантией доступности и ответственностью.</em></div>
+							</div>
+					</details>
+
+					<details class="accordion">
+						<summary>Шаг 4. Мониторинг</summary>
+						<!-- Здесь скрываемый контент -->
+						<!-- Шаг 4: Мониторинг -->
+							<div>
+								<div class="text">Стратегии определяют, как часто и пристально мы следим за риском:</div>
+								<ul class="step-list">
+									<li><strong>Избегание и смягчение</strong> — активный мониторинг условий до наступления события, контроль выполнения плана.</li>
+									<li><strong>Реагирование</strong> — следим за триггерами (признаками реализации), чтобы немедленно запустить план.</li>
+									<li><strong>Принятие</strong> — пассивный мониторинг, фиксация статуса «минёт/не минёт».</li>
+									<li><strong>Перенос</strong> — контроль соблюдения условий договора и SLA, эскалация при нарушениях.</li>
+								</ul>
+								<div class="text" style="margin-top:8px;"><strong>Статусы мониторинга:</strong> «На контроле», «Реализовался», «Миновал».</div>
+							</div>
+					</details>
+
+				
+					<details class="accordion">
+							<summary>Шаг 5. Корректирование</summary>
+							<!-- Здесь скрываемый контент -->
+							<!-- Шаг 5: Корректирование -->
+								<div>
+									<ul class="step-list">
+										<li>«Поставщик предупредил о задержке на 2 дня — сдвинули график сборки, предупредили клиента».</li>
+										<li>«Найден альтернативный поставщик — риск снизился, пересмотрен план смягчения».</li>
+										<li>«Изменились требования заказчика — добавлен новый риск, старый закрыт».</li>
+									</ul>
+								</div>
+					</details>	
+				
+
+				
+					<details class="accordion">
+							<summary>Шаг 6. Ретроспектива</summary>
+							<!-- Здесь скрываемый контент -->
+							<!-- Шаг 6: Ретроспектива -->
+								<div>
+									<ul class="step-list">
+										<li>Какие риски реализовались? Почему? Насколько план сработал?</li>
+										<li>Какие превентивные меры были самыми эффективными?</li>
+										<li>Какие риски стоит добавить в типовой реестр компании?</li>
+										<li>Что улучшить в процессах выявления и управления рисками?</li>
+									</ul>
+								</div>
+							</div>
+					</details>			
+								
+				
+	</details>				
+</div>				
+				
+				
+
+                <div class="note">
+                    <strong>Совет:</strong> После заполнения реестра создайте задачи в производственном проекте для каждого плана реагирования.
+                </div>
+
+                <div class="footer-note">Инструмент управления рисками. Версия 2.0 (май 2026)</div>
+            </div> <!-- конец #risk-register-app -->
+
+        </div> <!-- конец .document-body -->
+    </div> <!-- конец .document -->
+
+    <script>
+    (function() {
+        const strategyOptions = ['Избегание', 'Смягчение', 'Перенос', 'Реагирование', 'Принятие'];
+        const probabilityOptions = ['Низкая', 'Средняя', 'Высокая'];
+        const lossOptions = ['Низкий', 'Средний', 'Высокий'];
+
+        function calcSeriousness(prob, loss) {
+            const matrix = {
+                'Низкая':  { 'Низкий':1, 'Средний':2, 'Высокий':3 },
+                'Средняя': { 'Низкий':2, 'Средний':4, 'Высокий':6 },
+                'Высокая': { 'Низкий':3, 'Средний':6, 'Высокий':9 }
+            };
+            return matrix[prob]?.[loss] ?? null;
+        }
+
+        function getSeriousnessStyle(value) {
+            if (value <= 2) return { color: 'white', bg: '#2e7d32', text: value + ' — Низкая' };
+            if (value <= 4) return { color: '#1e2b3c', bg: '#ffc107', text: value + ' — Средняя' };
+            return { color: 'white', bg: '#c0392b', text: value + ' — Большая' };
+        }
+
+        function updateSeriousnessCell(row) {
+            const probSelect = row.querySelector('.probability-cell select');
+            const lossSelect = row.querySelector('.loss-cell select');
+            const serCell = row.querySelector('.risk-seriousness');
+            if (!probSelect || !lossSelect || !serCell) return;
+            const value = calcSeriousness(probSelect.value, lossSelect.value);
+            if (value !== null) {
+                const style = getSeriousnessStyle(value);
+                serCell.textContent = style.text;
+                serCell.style.backgroundColor = style.bg;
+                serCell.style.color = style.color;
+                serCell.style.fontWeight = '700';
+                serCell.style.textAlign = 'center';
+            } else {
+                serCell.textContent = '—';
+                serCell.style.backgroundColor = '';
+                serCell.style.color = '';
+                serCell.style.fontWeight = '';
+            }
+        }
+
+        function injectSelect(cell, options, selectedValue, onChange) {
+            const select = document.createElement('select');
+            select.style.cssText = 'width:100%; height:100%; border:none; background:transparent; font-family:inherit; font-size:13px; color:#1e2b3c; padding:8px 4px; cursor:pointer; appearance:auto;';
+            options.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                if (opt === selectedValue) option.selected = true;
+                select.appendChild(option);
+            });
+            if (onChange) select.addEventListener('change', onChange);
+            cell.innerHTML = '';
+            cell.appendChild(select);
+            return select;
+        }
+
+        function initRow(row) {
+            const probCell = row.querySelector('.probability-cell');
+            const lossCell = row.querySelector('.loss-cell');
+            const stratCell = row.querySelector('.strategy-cell');
+            const probValue = probCell ? probCell.dataset.value || probabilityOptions[0] : probabilityOptions[0];
+            const lossValue = lossCell ? lossCell.dataset.value || lossOptions[0] : lossOptions[0];
+            const stratValue = stratCell ? stratCell.dataset.value || strategyOptions[0] : strategyOptions[0];
+            if (probCell) injectSelect(probCell, probabilityOptions, probValue, () => updateSeriousnessCell(row));
+            if (lossCell) injectSelect(lossCell, lossOptions, lossValue, () => updateSeriousnessCell(row));
+            if (stratCell) injectSelect(stratCell, strategyOptions, stratValue);
+            updateSeriousnessCell(row);
+        }
+
+        function addRow() {
+            const tbody = document.querySelector('#riskRegisterTable tbody');
+            const newRow = document.createElement('tr');
+            newRow.className = 'risk-row';
+            newRow.innerHTML = `
+                <td class="row-number"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td class="probability-cell" data-value="Низкая"></td>
+                <td class="loss-cell" data-value="Низкий"></td>
+                <td class="risk-seriousness"></td>
+                <td class="strategy-cell" data-value="Избегание"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+            `;
+            tbody.appendChild(newRow);
+            initRow(newRow);
+            renumberRows();
+        }
+
+        function removeLastRow() {
+            const tbody = document.querySelector('#riskRegisterTable tbody');
+            const rows = tbody.querySelectorAll('tr.risk-row');
+            if (rows.length <= 1) {
+                alert('Нельзя удалить все строки. Оставьте хотя бы один риск.');
+                return;
+            }
+            rows[rows.length - 1].remove();
+            renumberRows();
+        }
+
+        function renumberRows() {
+            document.querySelectorAll('#riskRegisterTable tbody tr.risk-row').forEach((row, idx) => {
+                const numCell = row.querySelector('.row-number');
+                if (numCell) numCell.textContent = idx + 1;
+            });
+        }
+		function removeRowByNumber() {
+			const tbody = document.querySelector('#riskRegisterTable tbody');
+			const rows = tbody.querySelectorAll('tr.risk-row');
+			if (rows.length === 0) return;
+
+			const maxNumber = rows.length;
+			const input = prompt(`Введите номер строки для удаления (от 1 до ${maxNumber}):`);
+			if (input === null) return;
+
+			const number = parseInt(input, 10);
+			if (isNaN(number) || number < 1 || number > maxNumber) {
+				alert(`Введите корректный номер от 1 до ${maxNumber}`);
+				return;
+			}
+
+			if (rows.length <= 1) {
+				alert('Нельзя удалить все строки. Оставьте хотя бы один риск.');
+				return;
+			}
+
+			rows[number - 1].remove();
+			renumberRows();
+		}
+
+        function exportCSV() {
+            const rows = Array.from(document.querySelectorAll('#riskRegisterTable tbody tr.risk-row'));
+            const csvContent = [];
+            const headers = Array.from(document.querySelectorAll('#riskRegisterTable thead th')).map(th => th.textContent.trim());
+            csvContent.push(headers.join(','));
+            rows.forEach(row => {
+                const rowData = [];
+                const cells = Array.from(row.querySelectorAll('td'));
+                cells.forEach(cell => {
+                    if (cell.classList.contains('risk-seriousness')) {
+                        rowData.push('"' + (cell.textContent || '').replace(/"/g, '""') + '"');
+                    } else if (cell.querySelector('select')) {
+                        rowData.push('"' + cell.querySelector('select').value + '"');
+                    } else {
+                        rowData.push('"' + (cell.textContent || '').replace(/"/g, '""') + '"');
+                    }
+                });
+                csvContent.push(rowData.join(','));
+            });
+            const blob = new Blob(['\uFEFF' + csvContent.join('\n')], {type: 'text/csv;charset=utf-8;'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'Реестр_рисков.csv';
+            link.click();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('#riskRegisterTable tbody tr.risk-row').forEach(row => initRow(row));
+            document.getElementById('addRiskRowBtn').addEventListener('click', addRow);
+            document.getElementById('removeRiskRowBtn').addEventListener('click', removeRowByNumber);
+            document.getElementById('exportRiskCSV').addEventListener('click', exportCSV);
+        });
+    })();
+    </script>
+</body>
+</html>
